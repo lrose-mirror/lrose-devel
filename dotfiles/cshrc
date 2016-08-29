@@ -29,7 +29,7 @@ setenv LESSCHARSET latin1
 
 set hostname=`hostname`
 
-setenv WORK $HOME/git/lrose-code/codebase
+setenv WORK $HOME/git/lrose-core/codebase
 
 setenv PROJ_DIR $HOME/projDir
 setenv RELEASES $HOME/releases
