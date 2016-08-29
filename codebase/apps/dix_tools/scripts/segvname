@@ -1,0 +1,13 @@
+#! /bin/csh -f
+
+############################################################################
+#
+# This script kills any programs with the name as argument
+#
+
+set ppids =  ` ps -x | grep -v grep | grep $1 | awk ' {print $1 } ' `
+
+foreach ppid ($ppids)
+  kill -SEGV $ppid
+end
+

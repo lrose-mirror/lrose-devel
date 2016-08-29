@@ -1,0 +1,34 @@
+/*********************************************************
+ * parameter definitions for ReformatMap
+ *
+ * Mike Dixon, RAP, NCAR, Boulder, CO, USA, 80307-3000
+ *
+ * Jan 2002
+ */
+
+//////////////////////////////////////////////////////////
+
+commentdef {
+  p_header = "ReformatMap reformats a map file.";
+}
+
+commentdef {
+  p_header = "DEBUGGING AND PROCESS CONTROL";
+}
+
+typedef enum {
+  DEBUG_OFF, DEBUG_NORM, DEBUG_VERBOSE
+} debug_t;
+
+paramdef enum debug_t
+{
+  p_default = {DEBUG_OFF};
+  p_descr = "Debug option";
+  p_help = "If set, debug messages will be printed appropriately";
+} debug;
+
+paramdef string
+{
+  p_default = "map.data";
+  p_descr = "Map file path for reformatting.";
+} map_file_path;

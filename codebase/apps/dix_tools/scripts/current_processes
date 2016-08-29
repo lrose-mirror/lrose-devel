@@ -1,0 +1,13 @@
+  PID TT STAT  TIME COMMAND
+ 8402 ?  IWN   0:00 sh -c $HOME/scripts/backup_to_remote eddy
+ 8403 ?  IWN   0:00 /bin/csh /home/dixon/scripts/backup_to_remote eddy
+15785 ?  S     1:56 servmap -quiet
+23486 ?  Z     0:00 <defunct>
+23535 ?  Z     0:00 <defunct>
+23536 ?  IW    0:00 tcsh -c setenv DISPLAY eddy:0.0; xemacs -fn 8x13 -geometry 80x60+20+40 &
+23537 ?  I     0:32 xemacs -fn 8x13 -geometry 80x60+20+40
+23540 ?  IW    0:00 /local/emacs/etc/wakeup 60
+26437 ?  S     0:00 track_server -params /home/dixon/titan/params/track_server.kav.demo
+26466 ?  S     0:00 track_server -params /home/dixon/titan/params/track_server.kav.demo
+23488 pa S     0:00 -csh (tcsh)
+26736 pa R     0:00 ps -xww

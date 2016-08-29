@@ -1,0 +1,22 @@
+#############################################
+# .cshrc file - Mike Dixon RAP June 1990
+#############################################
+
+#
+# set environment file names for the applications
+#
+
+setenv cart_slave_params /home/dixon/control/params.cart_slave.chill
+setenv clutter_compute_params /home/dixon/control/params.clutter_compute.chill
+setenv clutter_remove_params /home/dixon/control/params.clutter_remove.chill
+setenv clutter_table_generate_params /home/dixon/control/params.clutter_table_generate.chill
+setenv dobson_from_shmem_params /home/dixon/control/params.dobson_from_shmem.chill
+setenv dobson_server_params /home/dixon/control/params.dobson_server.chill
+setenv rctable_generate_params /home/dixon/control/params.rctable_generate.chill
+setenv rdata_to_socket_params /home/dixon/control/params.rdata_to_socket.chill
+setenv rdata_to_shmem_params /home/dixon/control/params.rdata_to_shmem.chill
+setenv rview_params /home/dixon/control/params.rview.chill
+setenv storm_ident_params /home/dixon/control/params.storm_ident.chill
+setenv storm_track_params /home/dixon/control/params.storm_track.chill
+setenv time_hist_params /home/dixon/control/params.time_hist.chill
+setenv track_server_params /home/dixon/control/params.track_server.chill

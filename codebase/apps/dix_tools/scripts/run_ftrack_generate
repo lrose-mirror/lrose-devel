@@ -1,0 +1,9 @@
+#! /bin/csh
+
+ftrack_generate_sub en_route_full_current
+ftrack_generate_sub jet_approach_full_current
+ftrack_generate_sub jet_approach_full_future
+ftrack_generate_sub prop_approach_limited_current
+ftrack_generate_sub prop_approach_full_current
+ftrack_generate_sub prop_approach_full_future
+

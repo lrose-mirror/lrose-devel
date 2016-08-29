@@ -1,0 +1,1 @@
+lint -huz -I../include -I/usr/local/X11R5/include $1 | lint_filter

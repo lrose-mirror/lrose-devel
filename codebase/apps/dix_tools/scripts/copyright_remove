@@ -1,0 +1,107 @@
+#! /usr/local/bin/perl
+
+#
+# script to remove copyright notice from source code files
+#
+
+#
+# usage copyright_remove target_files
+#
+
+#
+# loop through all the args as filenames
+#
+
+ FILE:
+foreach $filename (@ARGV) {
+
+  $OK = 0;
+
+  print(STDERR "Removing copyright from $filename\n");
+
+  $bakfile = $filename . ".bak";
+  system ('/bin/mv', $filename, $bakfile);
+
+  if (!open(SRCFILE, $bakfile)) {
+    print(STDERR "Cannot open source file $bakfile - continuing ... \n");
+    next FILE;
+  }
+
+  if (!open(STDOUT, ">$filename")) {
+    print(STDERR "Cannot open file $filename - continuing ... \n");
+    next FILE;
+  }
+
+  $linenum = 0;
+  $in_copyright = 0;
+  $start_pattern = "/*=*=*=*=*=*=";
+  $end_pattern = " *=*=*=*=*=*=";
+
+  #
+  # loop through the lines in the file
+  #
+
+  while ($line = <SRCFILE>) {
+
+    $linenum++;
+
+    #
+    # if not in copyright, look for start of copyright
+    #
+
+    if (!$in_copyright) {
+
+      if (index($line, $start_pattern) >= 0) {
+
+	#
+	# start of copyright
+	#
+
+	$in_copyright = 1;
+	$OK = 0;
+
+      } else {
+	
+	#
+	# not in copyright, copy line out
+	#
+
+	print (STDOUT $line);
+
+      } # if (index($line, $start_pattern) >= 0)   
+
+    } else {
+
+      if (index($line, $end_pattern) >= 0) {
+
+	#
+	# end of copyright
+	#
+
+	$in_copyright = 0;
+	$OK = 1;
+
+      } # if (index($line, $end_pattern) >= 0) 
+
+    } # if (!$in_copyright) 
+
+  } # while 
+
+  #
+  # remove bak file 
+  #
+	
+  if ($OK) {
+
+    unlink ($bakfile);
+
+  } else {
+
+    unlink($filename);
+    system ('/bin/mv', $bakfile, $filename);
+    printf(stderr "ERROR in file $filename - copyright not removed\n");
+    
+  }
+
+} # foreach
+

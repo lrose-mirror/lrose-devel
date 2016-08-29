@@ -1,0 +1,50 @@
+#! /bin/csh
+
+cd /home/dixon/src/new_rfutil
+echo making new_rfutil
+make $1
+
+cd ../new_interval_print
+echo making new_interval_print
+make $1
+
+cd ../new_rview
+echo making new_rview
+make $1
+
+cd ../new_storm_ident
+echo making new_storm_ident
+make $1
+
+cd ../new_storm_track
+echo making new_storm_track
+make $1
+
+cd ../new_time_hist
+echo making new_time_hist
+make $1
+
+cd ../new_track_print
+echo making new_track_print
+make $1
+
+cd ../new_track_server
+echo making new_track_server
+make $1
+
+cd ../new_tracks_to_ascii
+echo making new_tracks_to_ascii
+make $1
+
+cd ../new_verify_day
+echo making new_verify_day
+make $1
+
+cd ../new_verify_tracks
+echo making new_verify_tracks
+make $1
+
+cd ../new_view_file
+echo making new_view_file
+make $1
+

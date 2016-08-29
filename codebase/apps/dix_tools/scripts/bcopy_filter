@@ -1,0 +1,225 @@
+#! /usr/local/bin/perl
+
+#
+# filter to change function entries in source code
+# 
+# bcopy to memcpy
+# bzero to memset
+# bcmp to memcmp
+#
+#
+# usage: bcopy_filter target_files
+#
+
+#
+# subroutine to get string up to a pattern
+#
+#
+# usage: get_before ($a, $b) - returns the string up to $b in $a
+#
+
+sub get_before {
+
+  local ($target, $pattern) = @_;
+
+  $pos = index($target, $pattern);
+
+  if ($pos != -1) {
+  
+    $start = 0;
+    $before = substr($target, $start, $pos);
+    return $before;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# subroutine to get remainder of string beyond search pattern
+#
+#
+# usage: get_rem ($a, $b) - returns the string beyond $b in $a
+#
+
+sub get_rem {
+
+  local ($target, $pattern) = @_;
+
+
+  $pos = index($target, $pattern);
+  
+  if ($pos != -1) {
+
+    $remainder = substr($target, $pos + length($pattern),
+			length($target) - $pos);
+    return $remainder;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# main routine
+#
+
+#
+# loop through all the args as filenames
+#
+
+ FILE:
+foreach $filename (@ARGV) {
+
+  print(STDERR "\n");
+  print(STDERR "$filename\n");
+
+  $bakfile = $filename . ".bak";
+  system ('/bin/mv', $filename, $bakfile);
+
+  if (!open(SRCFILE, $bakfile)) {
+    print(STDERR "Cannot open source file $bakfile - continuing ... \n");
+    next FILE;
+  }
+
+  if (!open(STDOUT, ">$filename")) {
+    print(STDERR "Cannot open file $filename - continuing ... \n");
+    next FILE;
+  }
+
+  $linenum = 0;
+
+  #
+  # loop through the lines in the file
+  #
+
+  while ($line = <SRCFILE>) {
+
+    $linenum++;
+
+    #
+    # search for keywords which identify functions to be changed
+    #
+
+    if ($line =~ /bcopy/) {
+
+      #
+      # bcopy to be changed to memcpy
+      #
+
+      $expr = $line;
+      while ($line !~ /;/) {
+	$line = <SRCFILE>;
+	$expr = $expr . $line;
+	$linenum++;
+      }
+
+      $indent = index($expr, "bcopy");
+      $indent_str1 = " " x $indent;
+      $indent_str2 = " " x ($indent + 8);
+      
+      $target1 = &get_rem($expr, "bcopy");
+      $target1 = &get_rem($target1, "(");
+      $target2 = $target1;
+      
+      $first_arg = &get_before($target1, ",");
+      $first_arg = &get_rem($first_arg, "(char *)");
+      
+      $target2 = &get_rem($target2, ",");
+      $target3 = $target2;
+      
+      $second_arg = &get_before($target2, ",");
+      $second_arg = &get_rem($second_arg, "(char *)");
+      $second_arg =~ s/\s*//;
+
+      $target3 = &get_rem($target3, ",");
+      $third_arg = &get_before($target3, ");");
+      $third_arg = &get_rem($third_arg, "\n");
+      $third_arg = &get_rem($third_arg, "(int)");
+      $third_arg =~ s/\s*//;
+
+      #
+      # print pointer arithmetic warnings
+      #
+
+      if ((index($first_arg, "+") >= 0) ||
+	(index($first_arg, " - ") >= 0)) {
+	print(STDERR "**** WARNING - CHECK POINTER ARITHMETIC\n\007");
+      }
+
+      if ((index($second_arg, "+") >= 0) ||
+	(index($first_arg, " - ") >= 0)) {
+	print(STDERR "**** WARNING - CHECK POINTER ARITHMETIC\n\007");
+      }
+
+      print(STDERR "\n$linenum: $expr \n");
+
+      print(STDERR $indent_str1, "memcpy ((void *) $second_arg,\n",
+	    $indent_str2, "(void *) $first_arg,\n",
+	    $indent_str2, "(size_t) $third_arg);\n");
+
+      print(STDOUT $indent_str1, "memcpy ((void *) $second_arg,\n",
+	    $indent_str2, "(void *) $first_arg,\n",
+	    $indent_str2, "(size_t) $third_arg);\n");
+
+    } elsif ($line =~ /bzero/) {
+
+      #
+      # bzero to be changed to memset
+      #
+
+      $expr = $line;
+      while ($line !~ /;/) {
+	$line = <SRCFILE>;
+	$expr = $expr . $line;
+	$linenum++;
+      }
+      
+      $indent = index($expr, "bzero");
+      $indent_str1 = " " x $indent;
+      $indent_str2 = " " x ($indent + 8);
+      
+      $target1 = &get_rem($expr, "bzero");
+      $target1 = &get_rem($target1, "(");
+      $target2 = $target1;
+      
+      $first_arg = &get_before($target1, ",");
+      $first_arg = &get_rem($first_arg, "(char *)");
+      
+      $target2 = &get_rem($target2, ",");
+      $second_arg = &get_before($target2, ");");
+      $second_arg = &get_rem($second_arg, "(int)");
+      $second_arg =~ s/\s*//;
+
+      #
+      # print pointer arithmetic warnings
+      #
+
+      if ((index($first_arg, "+") >= 0) ||
+	(index($first_arg, " - ") >= 0)) {
+	print(STDERR "**** WARNING - CHECK POINTER ARITHMETIC\n\007");
+      }
+
+      print(STDERR "\n$linenum: $expr \n");
+      print(STDERR $indent_str1, "memset ((void *) $first_arg,\n",
+	    $indent_str2, "(int) 0, (size_t) $second_arg);\n");
+
+      print(STDOUT $indent_str1, "memset ((void *) $first_arg,\n",
+	    $indent_str2, "(int) 0, (size_t) $second_arg);\n");
+
+    } else {
+
+      print(STDOUT $line);
+
+    } #  if ($line =~ /bcopy/)
+
+  } # while
+
+} # foreach
+

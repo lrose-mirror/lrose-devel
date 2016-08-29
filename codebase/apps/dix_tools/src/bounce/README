@@ -1,0 +1,8 @@
+For best results in running "bounce": install the Bounce.appdefaults file
+as "Bounce" in /usr/lib/X11/app-defaults or equivalent. To replace text in
+buttons with icons as shown in the book, edit the appdefaults file to
+uncomment the last half of the file. Then, place the files run, runI, step,
+stepI, stop, and stopI in the bitmap path (normally,
+/usr/include/X11/bitmaps or your HOME directory, will work fine)
+
+

@@ -1,0 +1,26 @@
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+! Appdefaults file for bounce program
+! To install, copy to /usr/lib/X11/app-defaults
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+bounce*clock*titleString:             		Frames Per Second
+bounce*fontList:  -*-helvetica-bold-r-normal--14-*-*-*-*-*-iso8859-1
+bounce*quit*labelString:              		Quit
+bounce*XmScale*orientation:           		horizontal
+bounce*colorChooser_popup*title:      	Color Chooser
+bounce*stage*width: 	                  400
+bounce*stage*height: 	                 250
+
+!! Optional resources, to be used with bitmaps found in the source directory
+
+!bounce*Run*labelType:  			 pixmap
+!bounce*Run*labelPixmap:      		 run
+!bounce*Run*labelInsensitivePixmap:  	 runI
+
+!bounce*Stop*labelType: 			 pixmap
+!bounce*Stop*labelPixmap:            	 stop
+!bounce*Stop*labelInsensitivePixmap: 	 stopI
+
+!bounce*Step*labelType:                   pixmap
+!bounce*Step*labelPixmap:     		 step
+!bounce*Step*labelInsensitivePixmap: 	 stepI

@@ -1,0 +1,1 @@
+lint -huz -I../new_include $1 | lint_filter

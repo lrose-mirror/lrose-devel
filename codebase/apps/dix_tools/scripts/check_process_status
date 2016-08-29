@@ -1,0 +1,226 @@
+#! /usr/local/bin/perl
+
+#
+# script to check the status of processes relative to an expected 
+# process list
+#
+
+#
+# subroutine to get string up to a pattern
+#
+#
+# usage: get_before ($a, $b) - returns the string up to $b in $a
+#
+
+sub get_before {
+
+  local ($target, $pattern) = @_;
+
+  $pos = index($target, $pattern);
+
+  if ($pos != -1) {
+  
+    $start = 0;
+    $before = substr($target, $start, $pos);
+    return $before;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# subroutine to get remainder of string beyond search pattern
+#
+#
+# usage: get_rem ($a, $b) - returns the string beyond $b in $a
+#
+
+sub get_rem {
+
+  local ($target, $pattern) = @_;
+
+
+  $pos = index($target, $pattern);
+  
+  if ($pos != -1) {
+
+    $remainder = substr($target, $pos + length($pattern),
+			length($target) - $pos);
+    return $remainder;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# main routine
+#
+# check usage
+#
+
+if (@ARGV != 1 && @ARGV != 2) {
+
+  print("Usage : $0 [mode] expected_procs_file\n");
+  print("Mode : all, running, down\n");
+  exit(-1);
+
+}
+
+if (@ARGV == 2) {
+  $mode = shift(@ARGV);
+} else {
+  $mode = all;
+}
+
+if ($mode =~ /all/) {
+  $print_running = 1;
+  $print_down = 1;
+} elsif ($mode =~ /running/) {
+  $print_running = 1;
+  $print_down = 0;
+} elsif ($mode =~ /down/) {
+  $print_running = 0;
+  $print_down = 1;
+} else {  
+  print("Usage : $0 [mode] expected_procs_file\n");
+  print("Mode : all, running, down\n");
+  exit(-1);
+}
+
+#
+# Is this BSD or SysV?
+#
+	
+$vmunix = '/vmunix';
+
+if (-e $vmunix) {
+  $bsd = 1;
+} else {
+  $bsd = 0;
+}
+
+#
+# get the current processes
+#
+
+if ($bsd) {
+  $current_procs = `ps axww`;
+} else {
+  $current_procs = `ps \-ef`;
+}
+
+#
+# set expected procs file name
+#
+
+$expected_procs_file = shift(@ARGV);
+
+#
+# open
+#
+
+if (!open(EXPECTED, $expected_procs_file)) {
+  print(STDERR "Cannot open expected file $expected_procs_file\n");
+  exit();
+}
+
+#
+# print header
+#
+
+$whoami = `whoami`;
+chop($whoami);
+$hostname = `hostname`;
+chop($hostname);
+
+print("\n$whoami\@$hostname\n");
+
+#
+# loop through the lines in the expected file
+#
+
+$all_running = 1;
+$all_down = 1;
+
+while ($exp_entry = <EXPECTED>) {
+
+  if (index($exp_entry, ">") == 0) {
+
+    #
+    # notes
+    #
+
+    $note = $exp_entry;
+    $note =~ s/^>//;
+    $note =~ s/^\s*//;
+    chop($note);
+    print ("$note\n");
+
+  } elsif (index($exp_entry, "#") != 0 && index($exp_entry, ":") > 0) {
+
+    #
+    # process string is before comma, description after comma
+    #
+
+    $expected_proc = &get_before($exp_entry, ":");
+    $description = &get_rem($exp_entry, ":");
+
+    #
+    # remove whitespace at start or end of strings
+    #
+
+    $expected_proc =~ s/^\s*//;
+    $expected_proc =~ s/\s*$//;
+
+    $description =~ s/^\s*//;
+    $description =~ s/\s*$//;
+
+    #
+    # check current procs for expected process 
+    #
+
+    if (index($current_procs, $expected_proc) >= 0) {
+      $running = 1;
+    } else {
+      $running = 0;
+    }
+
+    if ($running) {
+
+      $all_down = 0;
+
+      if ($print_running) {
+	print ("RUNNING  : $description\n  $expected_proc\n");
+      }
+
+    } else {
+
+      $all_running = 0;
+
+      if ($print_down) {
+	print ("**DOWN** : $description\n  $expected_proc\n");
+      }
+
+    } # if ($running)
+  
+  } # if (index($exp_entry, ...
+
+} # while ($exp_entry = <EXPECTED>) 
+
+if ($all_running) {
+  print ("ALL PROCESSES RUNNING\n");
+} elsif ($all_down) {
+  print ("ALL PROCESSES DOWN\n");
+}
+  
+
+exit();
+

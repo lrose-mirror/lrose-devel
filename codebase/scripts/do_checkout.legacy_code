@@ -1,0 +1,294 @@
+#!/bin/sh
+
+# checkout for legacy code
+
+# distributions
+
+cvs co -P distribs/aoaws
+cvs co -P distribs/cidd
+cvs co -P distribs/cp2
+cvs co -P distribs/hawk
+cvs co -P distribs/hcr
+cvs co -P distribs/hiwc
+cvs co -P distribs/lrose
+cvs co -P distribs/ncwf
+cvs co -P distribs/radx
+cvs co -P distribs/refractt
+cvs co -P distribs/rvp8
+cvs co -P distribs/titan
+cvs co -P distribs/wsddm
+
+# documentation
+
+cvs co -P distribs/env_settings
+cvs co -P distribs/env_setup
+cvs co -P doc/lrose
+
+# make etc.
+
+cvs co make_include
+cvs co make_bin
+
+# libraries
+
+cvs co -lP libs
+
+cvs co -P libs/advect
+cvs co -P libs/apiMdv
+cvs co -P libs/apiTitan
+cvs co -P libs/cidd
+cvs co -P libs/clapack
+cvs co -P libs/class_tools
+cvs co -P libs/climo
+cvs co -P libs/closedpoly
+cvs co -P libs/Colide
+cvs co -P libs/contour
+cvs co -P libs/ConvWx
+cvs co -P libs/ConvWxBlending
+cvs co -P libs/ConvWxIO
+cvs co -P libs/ConvWxParams
+cvs co -P libs/ConvWxTstorm
+cvs co -P libs/cospa
+cvs co -P libs/cospa_params
+cvs co -P libs/data_grids
+cvs co -P libs/dataport
+cvs co -P libs/dbmalloc
+cvs co -P libs/devguide
+cvs co -P libs/dialer
+cvs co -P libs/didss
+cvs co -P libs/dld
+cvs co -P libs/dsdata
+cvs co -P libs/dsserver
+cvs co -P libs/edge
+cvs co -P libs/eispack
+cvs co -P libs/euclid
+cvs co -P libs/FiltAlg
+cvs co -P libs/FiltAlgVirtVol
+cvs co -P libs/Fmq
+cvs co -P libs/fmqFormats
+cvs co -P libs/forayRal
+cvs co -P libs/freezing_level
+cvs co -P libs/grib
+cvs co -P libs/grib2
+cvs co -P libs/grib_classes
+cvs co -P libs/gribw
+cvs co -P libs/grid
+cvs co -P libs/gtime
+cvs co -P libs/hrit
+cvs co -P libs/hydro
+cvs co -P libs/icing
+cvs co -P libs/jni
+cvs co -P libs/JuliaSet
+cvs co -P libs/kd
+cvs co -P libs/llwas
+cvs co -P libs/map
+cvs co -P libs/mat
+cvs co -P libs/matlab
+cvs co -P libs/matrix
+cvs co -P libs/mcidas
+cvs co -P libs/Mcidas_2003
+cvs co -P libs/mdv
+cvs co -P libs/Mdv
+cvs co -P libs/mel_bufr
+cvs co -P libs/mm5
+cvs co -P libs/NcfMdv
+cvs co -P libs/ocolide
+cvs co -P libs/olgx
+cvs co -P libs/perl5
+cvs co -P libs/physics
+cvs co -P libs/prod_sel
+cvs co -P libs/prodserv
+cvs co -P libs/Proj4Wrap
+cvs co -P libs/python
+cvs co -P libs/radar
+cvs co -P libs/radarsim
+cvs co -P libs/Radx
+cvs co -P libs/RadxFiltAlg
+cvs co -P libs/rapformats
+cvs co -P libs/rapmath
+cvs co -P libs/rapplot
+cvs co -P libs/rdi
+cvs co -P libs/Refract
+cvs co -P libs/refractt
+cvs co -P libs/rvp8_rap
+cvs co -P libs/scripts
+cvs co -P libs/shapelib
+cvs co -P libs/sim
+cvs co -P libs/spdb
+cvs co -P libs/Spdb
+cvs co -P libs/spdbFormats
+cvs co -P libs/SpdbServer
+cvs co -P libs/symprod
+cvs co -P libs/symprod98
+cvs co -P libs/tdrp
+cvs co -P libs/tiff
+cvs co -P libs/timeseries_qc
+cvs co -P libs/titan
+cvs co -P libs/toolsa
+cvs co -P libs/trmm_rsl
+cvs co -P libs/xview
+cvs co -P libs/xview64
+cvs co -P libs/xml_formats
+
+# system apps
+
+cvs co -P apps/makefiles
+
+cvs co -P apps/aoaws
+cvs co -P apps/awc
+cvs co -P apps/bufr
+cvs co -P apps/build
+cvs co -P apps/cidd
+cvs co -P apps/climo
+cvs co -P apps/CodeChecks
+cvs co -P apps/colide
+cvs co -P apps/Colide
+cvs co -P apps/datamap
+cvs co -P apps/dealias
+cvs co -P apps/didss
+cvs co -P apps/dix_tools
+cvs co -P apps/dsserver
+cvs co -P apps/fdist
+cvs co -P apps/filedist
+cvs co -P apps/filters
+cvs co -P apps/grib
+cvs co -P apps/grib_tools
+cvs co -P apps/hiwc
+cvs co -P apps/hrrr
+cvs co -P apps/hub
+cvs co -P apps/hydro
+cvs co -P apps/ingest
+cvs co -P apps/interp
+cvs co -P apps/jing
+cvs co -P apps/mad
+cvs co -P apps/matlab
+cvs co -P apps/mcidas
+cvs co -P apps/mdv_utils
+cvs co -P apps/mm5
+cvs co -P apps/nagios
+cvs co -P apps/ncwf
+cvs co -P apps/nids
+cvs co -P apps/nowcast
+cvs co -P apps/ocnd
+cvs co -P apps/physics
+cvs co -P apps/proc_list
+cvs co -P apps/procmap
+cvs co -P apps/prod_sel
+cvs co -P apps/prod_sel98
+cvs co -P apps/prodserv
+cvs co -P apps/radar
+cvs co -P apps/radarsim
+cvs co -P apps/radarsim_new
+cvs co -P apps/Radx
+cvs co -P apps/rdi
+cvs co -P apps/refractt
+cvs co -P apps/rvp8
+cvs co -P apps/satApps
+cvs co -P apps/scripts
+cvs co -P apps/servmap
+cvs co -P apps/spdb_server
+cvs co -P apps/spdb_utils
+cvs co -P apps/spol
+cvs co -P apps/spong
+cvs co -P apps/symprod
+cvs co -P apps/symprod_alg
+cvs co -P apps/tdrp
+cvs co -P apps/terascan_to_mdv
+cvs co -P apps/terascan_to_raster
+cvs co -P apps/titan
+cvs co -P apps/titan_analysis
+cvs co -P apps/tools
+cvs co -P apps/trec
+cvs co -P apps/triggers
+cvs co -P apps/vdras
+cvs co -P apps/vdrasSupport
+cvs co -P apps/wgrib
+cvs co -P apps/wripep
+cvs co -P apps/wsddm
+cvs co -P apps/wxmod
+cvs co -P apps/xpol
+
+# Sysview - Java
+
+# JAZZ
+
+cvs co java/src/edu/ucar/rap/ant
+cvs co java/src/edu/ucar/rap/datatype
+cvs co java/src/edu/ucar/rap/didss
+cvs co java/src/edu/ucar/rap/dobson
+cvs co java/src/edu/ucar/rap/dsserver
+cvs co java/src/edu/ucar/rap/euclid
+cvs co java/src/edu/ucar/rap/filter
+cvs co java/src/edu/ucar/rap/geometry
+cvs co java/src/edu/ucar/rap/graphics
+cvs co java/src/edu/ucar/rap/image
+cvs co java/src/edu/ucar/rap/jade
+cvs co java/src/edu/ucar/rap/jadeite
+cvs co java/src/edu/ucar/rap/jazz
+cvs co java/src/edu/ucar/rap/jrp
+cvs co java/src/edu/ucar/rap/mdv
+cvs co java/src/edu/ucar/rap/msg
+cvs co java/src/edu/ucar/rap/rapmath
+cvs co java/src/edu/ucar/rap/rapplot
+cvs co java/src/edu/ucar/rap/spdb
+cvs co java/src/edu/ucar/rap/spdbFormats
+cvs co java/src/edu/ucar/rap/sysview
+cvs co java/src/edu/ucar/rap/titan
+cvs co java/src/edu/ucar/rap/util
+cvs co java/src/edu/ucar/rap/util118
+cvs co java/src/edu/ucar/rap/xml
+cvs co java/src/edu/ucar/rap/zudnik
+
+cvs co data/resources/icons
+cvs co distribs/JADE_bootstrap
+
+# testing
+
+cvs co test/apps/didss
+cvs co test/apps/dsserver
+cvs co test/apps/fmq
+cvs co test/apps/grib
+cvs co test/apps/hydro
+cvs co test/apps/icing
+cvs co test/apps/physics
+cvs co test/apps/spdb_utils
+cvs co test/apps/tdrp
+cvs co test/apps/titan
+cvs co test/apps/titan_analysis
+cvs co test/apps/trec
+cvs co test/apps/wsddm
+cvs co test/apps/wxmod
+
+cvs co test/libs/dsdata
+cvs co test/libs/euclid
+cvs co test/libs/physics
+cvs co test/libs/rapformats
+cvs co test/libs/rapmath
+cvs co test/libs/rapplot
+cvs co test/libs/toolsa
+cvs co test/libs/xmlformats
+
+cvs co test/didss
+cvs co test/DmapTest
+cvs co test/dsdata
+cvs co test/dsserver
+cvs co test/euclid
+cvs co test/filters
+cvs co test/hydro
+cvs co test/ingest
+cvs co test/Mdv
+cvs co test/nowcast
+cvs co test/physics
+cvs co test/radar
+cvs co test/rapformats
+cvs co test/rapic
+cvs co test/rapmath
+cvs co test/spdb
+cvs co test/spdbFormats
+cvs co test/toolsa
+
+# third party code
+
+cvs co third_party/open/libs/eumetsat
+#cvs co third_party/open/libs/opera
+

@@ -1,0 +1,104 @@
+#! /usr/local/bin/perl
+
+#
+# script to prepend copyright notice to source code files
+#
+
+#
+# usage copyright_prepend target_files
+#
+
+#
+# loop through all the args as filenames
+#
+
+@months = ("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+@days = ("Sun","Mon","Tue","Wed","Thu","Fri","Sat");
+
+ FILE:
+
+foreach $filename (@ARGV) {
+
+  print(STDERR "Prepending copyright to $filename\n");
+
+  $bakfile = $filename . ".bak";
+  system ('/bin/mv', $filename, $bakfile);
+
+  if (!open(SRCFILE, $bakfile)) {
+    print(STDERR "Cannot open source file $bakfile - continuing ... \n");
+    next FILE;
+  }
+
+  if (!open(STDOUT, ">$filename")) {
+    print(STDERR "Cannot open file $filename - continuing ... \n");
+    next FILE;
+  }
+	
+  #
+  # get time
+  #
+
+  ($sec, $min, $hour, $mday, $mon, $year, $wday) = (gmtime(time))[0..6];
+
+
+  $line = <SRCFILE>;
+  if ($line =~ /perl/i) {
+      print ($line);
+  #
+  # write copyright at top of file (after 1st line if perl script!)
+  #
+
+  print ("#\n");
+  print ("#*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
+  print ("#** Copyright (c) 1995, UCAR\n");
+  print ("#** University Corporation for Atmospheric Research(UCAR)\n");
+  print ("#** National Center for Atmospheric Research(NCAR)\n");
+  print ("#** Research Applications Program(RAP)\n");
+  print ("#** P.O.Box 3000, Boulder, Colorado, 80307-3000, USA\n");
+  print ("#** All rights reserved. Licenced use only.\n");
+  print ("#** Do not copy or distribute without authorization\n");
+  print ("#** $days[$wday] $mday $months[$mon] 19$year $hour:$min:$sec UTC\n");
+  print ("#*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/\n");
+
+  } else {
+
+  #
+  # write copyright at top of file
+  #
+
+  print ("/*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*\n");
+  print (" ** Copyright (c) 1995, UCAR\n");
+  print (" ** University Corporation for Atmospheric Research(UCAR)\n");
+  print (" ** National Center for Atmospheric Research(NCAR)\n");
+  print (" ** Research Applications Program(RAP)\n");
+  print (" ** P.O.Box 3000, Boulder, Colorado, 80307-3000, USA\n");
+  print (" ** All rights reserved. Licenced use only.\n");
+  print (" ** Do not copy or distribute without authorization\n");
+  print (" ** $days[$wday] $mday $months[$mon] 19$year $hour:$min:$sec UTC\n");
+  print (" *=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*=*/\n");
+  print ($line);
+
+  }
+
+  #
+  # loop through the lines in the file
+  #
+
+  while ($line = <SRCFILE>) {
+
+    #
+    # copy to STDOUT
+    #
+
+    print ($line);
+
+  } # while 
+
+#
+# remove bak file
+#
+	
+unlink ($bakfile);
+
+} # foreach
+

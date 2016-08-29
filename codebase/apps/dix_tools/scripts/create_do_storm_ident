@@ -1,0 +1,29 @@
+#! /usr/local/bin/perl
+
+#
+# Creates storm_ident script from concatenated
+# storm file summary output.
+#
+#
+# replaces any contiguous whitespace with a single space
+#
+
+print "#! /bin/csh -f\n";
+print "\n";
+
+while (<>) {
+
+  if (/File   :/) {
+    print "storm_ident -params ", '$TITAN_HOME', "/params/storm_ident -starttime ";
+    ($_ = <>);
+    chop;
+    s/ /_/g;
+    print substr($_, 15, 34);
+    ($_ = <>);
+    s/ /_/g;
+    print " -endtime ", substr($_, 15, 34);
+    print "\n";
+  }
+
+}
+

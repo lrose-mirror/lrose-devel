@@ -1,0 +1,40 @@
+/*********************************************************
+ * parameter definitions for ComputeRangeAz
+ *
+ * Mike Dixon, RAP, NCAR, Boulder, CO, USA, 80307-3000
+ *
+ * Nov 2005
+ */
+
+//////////////////////////////////////////////////////////
+
+commentdef {
+  p_header = "Compute range and azimuth between two points.";
+}
+
+typedef enum {
+  DEBUG_OFF, DEBUG_NORM, DEBUG_VERBOSE
+} debug_t;
+
+paramdef enum debug_t {
+  p_default = DEBUG_OFF;
+  p_descr = "Debug option";
+  p_help = "If set, debug messages will be printed appropriately";
+} debug;
+
+paramdef double {
+  p_default = 0.0;
+} lat1;
+
+paramdef double {
+  p_default = 0.0;
+} lat2;
+
+paramdef double {
+  p_default = 0.0;
+} lon1;
+
+paramdef double {
+  p_default = 0.0;
+} lon2;
+

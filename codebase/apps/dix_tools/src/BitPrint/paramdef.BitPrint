@@ -1,0 +1,29 @@
+/*********************************************************
+ * parameter definitions for BitPrint
+ *
+ * Mike Dixon, RAP, NCAR, Boulder, CO, USA, 80307-3000
+ *
+ * Feb 1999
+ */
+
+//////////////////////////////////////////////////////////
+
+commentdef {
+  p_header = "BitPrint prints out bit locations for integers";
+}
+
+typedef enum {
+  DEBUG_OFF, DEBUG_NORM, DEBUG_VERBOSE
+} debug_t;
+
+paramdef enum debug_t {
+  p_default = DEBUG_OFF;
+  p_descr = "Debug option";
+  p_help = "If set, debug messages will be printed appropriately";
+} debug;
+
+paramdef int {
+  p_default = 0;
+} val;
+
+  

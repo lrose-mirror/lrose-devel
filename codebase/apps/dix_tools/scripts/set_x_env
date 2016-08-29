@@ -1,0 +1,6 @@
+#! /bin/csh
+setenv FONTPATH /usr/openwin/lib/fonts
+setenv HELPPATH /usr/openwin/lib/help
+setenv LD_LIBRARY_PATH /usr/openwin/lib
+setenv OPENWINHOME /usr/openwin
+setenv MANPATH /usr/openwin/share/man:/usr/man

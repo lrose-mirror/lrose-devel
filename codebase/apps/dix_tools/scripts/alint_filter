@@ -1,0 +1,89 @@
+#! /usr/local/bin/perl
+
+#
+#   lint_filter
+#
+#  filters out lines with unwanted messages, and the lines which follow
+#  when these are tabulated
+#
+
+$space_fwd = 0;
+
+ MAIN_LOOP:
+  
+while (<STDIN>) {
+
+  if ($space_fwd) {
+    if (/^\s/) {
+      $want_line = 0;
+    } else {
+      $want_line = 1;
+      $space_fwd = 0;
+    }
+  } else {
+    $want_line = 1;
+  } # if ($space_fwd)       
+
+  if (/^\n/) {
+    $want_line = 0;
+  }
+
+  if (/102/) {
+    $want_line = 0;
+  }
+
+  if (/307/) {
+    $want_line = 0;
+  }
+
+  if (/============/) {
+    $want_line = 0;
+  }
+
+  if (/suspicious comparison of unsigned with 0/) {
+    $want_line = 0;
+  }
+
+  if (/macro replacement within a character constant/) {
+    $want_line = 0;
+  }
+
+  if (/No such file or directory/) {
+    $want_line = 0;
+  }
+
+  if (/pointer cast may result in improper alignment/) {
+    $space_fwd = 1;
+    $want_line = 0;
+  }
+
+  if (/declared global, could be static/) {
+    $want_line = 0;
+    $space_fwd = 1;
+  }
+
+  if (/\:\:\ stdlib.h/) {
+    $want_line = 0;
+    $space_fwd = 1;
+  }
+
+  if (/function returns value which is always ignored/) {
+    $want_line = 0;
+    $space_fwd = 1;
+  }
+
+  if (/function returns value which is sometimes ignored/) {
+    $want_line = 0;
+    $space_fwd = 1;
+  }
+
+#
+# print line if wanted
+#
+
+  if ($want_line) {
+    print;
+  }
+
+} # while (<STDIN>) 
+

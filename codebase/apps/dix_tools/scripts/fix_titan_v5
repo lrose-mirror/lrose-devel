@@ -1,0 +1,63 @@
+#! /usr/local/bin/perl
+
+#
+# filter to change include entries in source code
+# 
+
+#
+# loop through all the args as filenames
+#
+
+ FILE:
+foreach $filename (@ARGV) {
+
+  print(STDERR "$filename\n");
+
+  $bakfile = $filename . ".bak";
+  system ('/bin/mv', $filename, $bakfile);
+
+  if (!open(SRCFILE, $bakfile)) {
+    print(STDERR "Cannot open source file $bakfile - continuing ... \n");
+    next FILE;
+  }
+
+  if (!open(OUT, ">$filename")) {
+    print(STDERR "Cannot open file $filename - continuing ... \n");
+    next FILE;
+  }
+
+  #
+  # loop through the lines in the file
+  # substituting as required
+  #
+
+  while ($line = <SRCFILE>) {
+
+    $line =~ s@dix_util/dix_util.h@toolsa/umisc.h@;
+    $line =~ s@dix_util/dix_mutil.h@rapmath/umath.h@;
+    $line =~ s@dix_util/dix_gutil.h@rapplot/gplot.h@;
+    $line =~ s@dix_util/dix_xutil.h@rapplot/xplot.h@;
+    $line =~ s@dix_util/dix_psutil.h@rapplot/psplot.h@;
+    $line =~ s@dix_util/dix_rfutil.h@titan/file_io.h@;
+    $line =~ s@storm_tracking/dix_storm.h@titan/storm.h@;
+    $line =~ s@storm_tracking/dix_track.h@titan/track.h@;
+    $line =~ s@storm_tracking/nids_sat.h@nids/nids_sat.h@;
+    $line =~ s@storm_tracking/tdata_index.h@titan/tdata_index.h@;
+    $line =~ s@storm_tracking/tdata_server.h@titan/tdata_server.h@;
+    $line =~ s@display_interface/flight_track.h@titan/flight_track.h@;
+    $line =~ s@display_interface/time_hist_shmem.h@titan/time_hist_shmem.h@;
+    $line =~ s@radar/dix_radar.h@titan/radar.h@;
+    $line =~ s@radar/radial_file.h@titan/radial_file.h@;
+    $line =~ s@radar/zr.h@titan/zr.h@;
+
+    $line =~ s@-ldix_util@-ltitan@;
+
+    print(OUT $line);
+
+  } # while
+
+  close(OUT);
+  close(SRCFILE);
+
+} # foreach
+

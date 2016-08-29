@@ -1,0 +1,25 @@
+#! /usr/local/bin/perl
+
+$prev_lon = 200.0;
+$prev_lat = 200.0;
+
+while ($line = <>) {
+
+  ($lon1, $lat1, $lon2, $lat2) = ($line =~ m%(\S+)\s(\S+)\s(\S+)\s(\S+).*%);
+
+  if ($lon1 != $prev_lon || $lat1 != $prev_lat) {
+
+    if ($lon1 > 113.8 && $lon1 < 114.5 && $lat1 > 22.12 && $lat1 < 22.59) {
+      printf(STDOUT "\n%.4f %.4f\n", $lon1, $lat1);
+    }
+
+  }
+  
+  if ($lon2 > 113.8 && $lon2 < 114.5 && $lat2 > 22.12 && $lat2 < 22.59) {
+    printf(STDOUT "%.4f %.4f\n", $lon2, $lat2);
+  }
+
+  $prev_lon = $lon2;
+  $prev_lat = $lat2;
+    
+}

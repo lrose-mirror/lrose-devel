@@ -1,0 +1,12 @@
+#! /bin/csh -f
+
+############################################################################
+#
+# copies .vfy files to .dob files
+#
+
+#! /bin/csh
+foreach i (*.vfy)
+        set file = $i:r.dob
+        cp $i $file
+end

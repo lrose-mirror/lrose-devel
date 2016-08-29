@@ -1,0 +1,69 @@
+#! /usr/local/bin/perl
+
+#
+# script to archive yesterday's storm files to stratus each day and then
+# delete them
+#
+
+#
+# check usage
+#
+
+($prog = $0) =~ s%.*/%%;
+
+$usage = "Usage : $prog no-args";
+ 
+if (@ARGV != 0) {
+
+  print("$usage\n");
+  exit(-1);
+
+}
+
+#
+# get date and time
+#
+
+$utime = time();
+
+#
+# change to yesterday
+#
+
+$utime -= 86400;
+
+($sec, $min, $hour, $mday, $mon, $year, $wday, $yday, $isdst) =
+  gmtime($utime);
+
+$year += 1900;
+$mon++;
+
+if ($mday < 10) {
+  $mday_str = "0" . $mday;
+} else {
+  $mday_str = $mday;
+}
+
+if ($month < 10) {
+  $mon_str = "0" . $mon;
+} else {
+  $mon_str = $mon;
+}
+
+#
+# go to data directory
+#
+
+chdir("$ENV{'AWPG_DIR'}/data/storm_track");
+
+#
+# rcp files to stratus
+#
+
+system ("rcp $year$mon_str$mday_str.* stratus:$ENV{'AWPG_DIR'}/data/storm_track_archive\n");
+
+#
+# rm files
+#
+
+system ("/bin/rm -f $year$mon_str$mday_str.*\n");

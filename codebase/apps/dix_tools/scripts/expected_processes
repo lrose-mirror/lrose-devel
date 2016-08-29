@@ -1,0 +1,30 @@
+#################################################################
+#
+# Expected processes for rap ops
+#
+# File to be used by check_process_status, to check if the
+# expected processes are running or not
+#
+# Format is 'process path and args' : 'description'
+#
+# Do not use ':' anywhere except between process name and description
+#
+# Blank lines and lines starting with # are ignored
+#
+# Lines starting with '>' are echoed to output
+# 
+# Mike Dixon, RAP, NCAR, Boulder, CO, 80307, USA
+#
+# May 1993
+#
+###################################################################
+
+> Note 1
+> Note 2
+> Note 3
+
+/local/emacs/etc/wakeup 60 : Wakeup call		
+
+track_server -params /home/dixon/titan/params/track_server.kav.demo : Track server for AWPG demo	
+track_server -params /home/dixon/titan/params/track_server.kav.live : Track server for AWPG ops
+

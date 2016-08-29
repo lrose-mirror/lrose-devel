@@ -1,0 +1,15 @@
+#! /bin/csh
+
+set start_dir = `pwd`
+
+foreach file (*)
+  if (-d $file) then
+    cd $file
+    pwd
+    dir_grep $1
+    cd $start_dir
+  else if (-x $file) then
+  else
+    grep $1 $file
+  endif
+end

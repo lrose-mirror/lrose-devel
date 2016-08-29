@@ -1,0 +1,69 @@
+#! /usr/local/bin/perl
+
+#
+# script to count fortran lines
+#
+
+#
+# loop through all the args as filenames
+#
+
+$tot_lines_comment = 0;
+$tot_lines_blank = 0;
+$tot_lines_code = 0;
+
+ FILE:
+foreach $filename (@ARGV) {
+
+  print(STDERR "Counting lines in $filename\n");
+
+  if (!open(SRCFILE, $filename)) {
+    print(STDERR "Cannot open source file $filename - continuing ... \n");
+    next FILE;
+  }
+
+  $nlines_comment = 0;
+  $nlines_blank = 0;
+  $nlines_code = 0;
+
+  #
+  # loop through the lines in the file
+  #
+
+  while ($line = <SRCFILE>) {
+
+    if ((index($line, "C") == 0) ||
+	(index($line, "c") == 0) ||
+	(index($line, "*") == 0)) {
+
+      $nlines_comment++;
+
+    } elsif ($line =~ /\S/) {
+
+      $nlines_code++;
+
+    } else {
+
+      $nlines_blank++;
+
+    }
+
+  }
+
+  print (" nlines_comment = $nlines_comment\n");
+  print (" nlines_blank = $nlines_blank\n");
+  print (" nlines_code = $nlines_code\n");
+
+  $tot_comment += nlines_comment;
+  $tot_blank += nlines_blank;
+  $tot_code += nlines_code;
+
+} # foreach $filename ...
+
+print ("\n TOTALS\n");
+print (" tot_lines_comment = $tot_lines_comment\n");
+print (" tot_lines_blank = $tot_lines_blank\n");
+print (" tot_lines_code = $tot_lines_code\n");
+
+exit(0);
+

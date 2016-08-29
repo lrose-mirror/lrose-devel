@@ -1,0 +1,10 @@
+#! /bin/csh
+
+grep LdataInfo */*.cc
+grep LdataInfo */*/*.cc
+grep LdataInfo */*/*/*.cc
+grep LdataInfo */*/*/*/*.cc
+grep LdataInfo */*/*/*/*/*.cc
+grep LdataInfo */*/*/*/*/*/*.cc
+grep LdataInfo */*/*/*/*/*/*/*.cc
+grep LdataInfo */*/*/*/*/*/*/*/*.cc

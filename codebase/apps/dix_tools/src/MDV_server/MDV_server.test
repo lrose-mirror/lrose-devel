@@ -1,0 +1,214 @@
+/**********************************************************************
+ * TDRP params for MDV_server
+ **********************************************************************/
+
+///////////// debug ///////////////////////////////////
+//
+// Debug option.
+// If set, debug messages will be printed appropriately.
+//
+// Type: enum
+// Options:
+//   DEBUG_OFF, DEBUG_NORM, DEBUG_VERBOSE
+//
+//
+
+debug = DEBUG_OFF;
+
+///////////// malloc_debug_level //////////////////////
+//
+// Malloc debug level.
+// 0 - none, 1 - corruption checking, 2 - records all malloc blocks and 
+//   checks, 3 - printout of all mallocs etc.
+// Minimum val: 0
+// Maximum val: 3
+// Type: long
+//
+
+malloc_debug_level = 0;
+
+///////////// subtype /////////////////////////////////
+//
+// Server subtype.
+// Used for registration with servmap.
+// Type: string
+//
+
+subtype = "MDV";
+
+///////////// instance ////////////////////////////////
+//
+// Process and server instance.
+// Used for registration with procmap and servmap.
+// Type: string
+//
+
+instance = "Test";
+
+///////////// info ////////////////////////////////////
+//
+// Server info.
+// Used for registration with servmap.
+// Type: string
+//
+
+info = "Test";
+
+///////////// port ////////////////////////////////////
+//
+// Server port number.
+// TCP/IP port for this server.
+// Minimum val: 10000
+// Type: long
+//
+
+port = 430001;
+
+///////////// data_dirs ///////////////////////////////
+//
+// Data directories.
+// List of directories holding the storm data.
+// Type: string
+// 1D array - variable length - 1 elements.
+//
+
+data_dirs = { "/home/aoaws/projDir/data/mdv/mm5" };
+//data_dirs = { "/venus_d1/heneker/rap_data_dir/mdv/radarCart" };
+
+///////////// realtime_avail //////////////////////////
+//
+// Real-time flag.
+// If set, indicates real-time data is available, shmem is created.
+// Type: boolean
+//
+
+realtime_avail = TRUE;
+
+///////////// use_realtime_file ///////////////////////
+//
+// Option to use real-time file.
+// If set, servers uses a single file for GET_NEW requests.
+// Type: boolean
+//
+
+use_realtime_file = FALSE;
+
+///////////// realtime_file_path //////////////////////
+//
+// Path to realtime file.
+// See use_realtime_file.
+// Type: string
+//
+
+realtime_file_path = "not_set";
+
+///////////// compress_for_transfer ///////////////////
+//
+// Option to compress data for transfer.
+// If set, data is run-length encoded for transfer over slow links.
+// Type: boolean
+//
+
+compress_for_transfer = FALSE;
+
+///////////// free_volume /////////////////////////////
+//
+// Option to free internal volume after transfer.
+// If set, the internal volume is freed after the data transfer.  This 
+//   is used when system memory usage is a problem and you are generally 
+//   requesting archive data.  For realtime data, this will just increase 
+//   memory allocation/deallocation and so will slow things down.
+// Type: boolean
+//
+
+free_volume = FALSE;
+
+///////////// time_offset /////////////////////////////
+//
+// Time offset (secs).
+// Search for data which is offset by this amount from the requested 
+//   time.
+// Type: long
+//
+
+time_offset = 0;
+
+///////////// use_endtime_flag ////////////////////////
+//
+// Option to use the data end time as the centroid time in realtime.
+// If set, the time returned as the centroid time for the data, when 
+//   running in realtime mode and retrieving the latest data, will be the 
+//   volume end time rather than the volume centroid time.  This is used 
+//   to assure the users that they are getting the latest data since it is 
+//   the volume centroid time that is displayed by our displays.
+// Type: boolean
+//
+
+use_endtime_flag = FALSE;
+
+///////////// lat_lon_override ////////////////////////
+//
+// Override lat and long.
+// If set to true, latitude and longitude given below will be 
+//   substituted for the latitude and longitude given in the mdv file in 
+//   communications with cidd.
+// Type: boolean
+//
+
+lat_lon_override = FALSE;
+
+///////////// lat /////////////////////////////////////
+//
+// Latitude.
+// If lat_lon_override is set to true, this value is used in place of 
+//   the latitude given in the mdv file in communications with cidd.
+// Type: double
+//
+
+lat = 39.79;
+
+///////////// lon /////////////////////////////////////
+//
+// Longitude.
+// If lat_lon_override is set to true, this value is used in place of 
+//   the longitude given in the mdv file in communications with cidd.
+// Type: double
+//
+
+lon = -104.57;
+
+///////////// projection //////////////////////////////
+//
+// Grid projection.
+// Local area flat grid, or lat-lon grid.
+//
+// Type: enum
+// Options:
+//   PROJ_FLAT, PROJ_LATLON
+//
+//
+
+projection = PROJ_LATLON;
+
+///////////// static_data_mode ////////////////////////
+//
+// Option to use static instead of time-dependent data.
+// If set, the MDV data is always retrieved from the specified file. The 
+//   time returned with the data is the same as the requested time. This 
+//   is useful for data sets such as terrain, which does not change with 
+//   time.
+// Type: boolean
+//
+
+static_data_mode = FALSE;
+
+///////////// static_data_file_path ///////////////////
+//
+// File path for static data.
+// See static data mode. When this mode is active, the returned data 
+//   always comes from this file.
+// Type: string
+//
+
+static_data_file_path = "none";
+

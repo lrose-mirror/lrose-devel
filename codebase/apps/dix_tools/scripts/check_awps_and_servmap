@@ -1,0 +1,62 @@
+#! /usr/local/bin/perl
+
+#
+# script to check the that the product server (awps) and server
+# mapper (servmap) are up, and restart them if they are down
+#
+# Usage :
+#   no args
+
+#
+# check usage
+#
+
+($prog = $0) =~ s%.*/%%;
+
+$usage = "Usage : $prog no-args";
+ 
+if (@ARGV > 0) {
+
+  print("$usage\n");
+  exit(-1);
+
+}
+
+#
+# check on awps on lull
+#
+
+$lull_down = `check_remote_processes lull rap_ops/process_list BSD down`;
+
+#
+# check if awps is in down list
+#
+
+if (index($lull_down, "awps ") >= 0) {
+  $awps_running = 1;
+} else {
+  $awps_running = 0;
+}
+
+if (!awps_running) {
+
+  #
+  # open log file and append message
+  #
+
+  open (LOGFILE, ">>$ENV{'HOME'}/rap_ops/awps_problems.log");
+  print (LOGIFLE "\nawps down `date`\n");
+  close (LOGFILE);
+
+  #
+  # start product server
+  #
+
+  system ("start_awps");
+
+} # if (!awps_running) 
+
+exit (0);
+
+
+

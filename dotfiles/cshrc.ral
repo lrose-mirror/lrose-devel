@@ -1,0 +1,558 @@
+#############################################
+# .cshrc file - Mike Dixon RAP June 1992
+#############################################
+
+umask 002
+
+setenv EDITOR /usr/local/bin/emacs
+setenv EMACS /usr/local/bin/emacs
+setenv USERNAME "dixon"
+setenv FULLNAME "Mike Dixon"
+setenv MANPATH /usr/man:/usr/X11R6/man:/usr/local/man:
+setenv TAPE /dev/rmt/tps0d4.8200
+setenv PRINTER stalk2
+#setenv TZ MST
+
+setenv VERT_SCAN_DIR /home/dixon/rhi_test/verticalScan
+
+#limit coredumpsize unlimited
+
+#
+#
+
+#
+# directories
+#
+
+setenv WSDDM_HOME $HOME/lga97
+setenv WSDDM_DATA_DIR $WSDDM_HOME/data
+setenv RADX_DATA_DIR $HOME/data/radx
+
+setenv TITAN_HOME $HOME/projDir
+#setenv TITAN_HOME $HOME/rap/apps/titan/src/Titan/test
+setenv CVSROOT :pserver:dixon@cvs:/cvs
+
+setenv AOAWS_HOME $HOME/projDir
+setenv DYNAMO_PROJ_DIR /media/SPOL-HD45/dynamo/projDir
+
+setenv SITE_DIR /d1/dixon/uae/aldhafra
+
+#
+# REGISTRATION
+#
+
+setenv SERVMAP_HOST localhost
+setenv PROCMAP_HOST localhost
+setenv PROCMAP_DIR $HOME/procdir
+
+#
+# Ldata FMQ
+#
+
+setenv LDATA_FMQ_ACTIVE true
+
+#
+# make
+#s
+
+#setenv GCC_WARNINGS "-Wall -Wextra"
+setenv GCC_WARNINGS "-Wall -std=c++11"
+#setenv GCC_WARNINGS "-Wall "
+setenv HOST_OS LINUX_64
+#setenv HOST_OS LINUX_64_32MODE
+#setenv HOST_OS LINUX_64_TEST
+
+setenv QMAKESPEC linux-g++
+
+#setenv WORK $HOME/rap
+setenv WORK $HOME/cvs
+setenv BUILD_DIR $HOME/cvs
+#setenv WORK $HOME/32cvs
+#setenv WORK $HOME/pgc
+#setenv WORK $HOME/bom/cp2_distrib
+#setenv WORK /d1/dixon/titan_distribution/cvs
+
+setenv RAP_MAKE_INC_DIR $WORK/make_include
+setenv RAP_MAKE_BIN_DIR $WORK/make_bin
+
+setenv RAP_INC_DIR $WORK/include
+setenv RAP_LIB_DIR $WORK/lib
+setenv RAP_BIN_DIR $WORK/bin
+setenv RAP_MAN_DIR $WORK/man
+setenv RAP_DOC_DIR $WORK/doc
+setenv RAP_JAVA_DIR $WORK/java_packages
+
+setenv RVP8_INC_DIR "$WORK/include -I/d1/dixon/rvp8/rda.8.10.2/tmp/include"
+setenv RVP8_LIB_DIR $WORK/lib
+setenv RVP8_BIN_DIR $WORK/bin
+
+setenv RAP_SHARED_INC_DIR $WORK/include
+setenv RAP_SHARED_LIB_DIR $WORK/lib
+setenv RAP_SHARED_BIN_DIR $WORK/bin
+
+#setenv RAP_SHARED_INC_DIR /rap/dev/include
+#setenv RAP_SHARED_LIB_DIR /rap/dev/lib
+#setenv RAP_SHARED_BIN_DIR /rap/dev/bin
+setenv RAP_SHARED_MAN_DIR /rap/dev/man
+setenv RAP_SHARED_DOC_DIR /rap/dev/doc
+
+setenv RAP_DEBUG_LIB_DIR $WORK/lib_debug
+setenv RAP_PROFILE_LIB_DIR $WORK/lib_profile
+setenv RAP_INSURE_LIB_DIR $WORK/lib
+
+setenv RAP_INST_BIN_DIR $WORK/bin
+setenv RAP_INST_JAVA_DIR $WORK/java/dist/lib
+
+setenv FORAY_INC_DIR $WORK/foray/include
+setenv FORAY_LIB_DIR $WORK/foray/lib
+
+setenv MY_NETCDF4_INCS
+setenv MY_NETCDF4_LIBS
+#setenv MY_NETCDF_LIBS -L/usr/local/netcdf4/lib
+#setenv MY_NETCDF_INCS -I/usr/local/netcdf/include
+#setenv MY_NETCDF_LIBS -L/usr/local/netcdf/lib
+
+setenv READYFLOW_7142_428_LINUX $HOME/eol/svn/ReadyFlow/1.0
+
+# use titan build environment if applicable
+
+#if ( -f $HOME/.titan_build_env ) then
+  # file created by sourcing set_build_env
+#  source $HOME/.titan_build_env
+#endif
+
+# git completion
+
+if ( -f $HOME/.git-completion.csh ) then
+    source $HOME/.git-completion.csh
+endif
+
+# McIdas
+
+setenv McINST_ROOT /d3/dixon/downloads/mcidas
+setenv VENDOR -gfortran
+setenv MCHOME $HOME/mcidas
+setenv MCDATA /d3/dixon/data/mcidas
+
+# building NCARG
+
+setenv NCARG /d1/aoaws/build/ncarg-4.4.1
+setenv FC pgf90
+setenv CC gcc
+
+setenv DATA_HOST localhost
+setenv PROJ_DIR $HOME/projDir
+setenv DATA_DIR $PROJ_DIR/data
+#setenv DATA_DIR $HOME/data
+setenv RAP_DATA_DIR $DATA_DIR
+setenv PROCMAP_HOST localhost
+setenv DATA_MAPPER_ACTIVE true
+setenv LDATA_FMQ_ACTIVE true
+setenv DATA_DISTRIB_LOG_DIR $PROJ_DIR/logs/distrib
+setenv ERRORS_LOG_DIR $PROJ_DIR/logs/errors
+setenv RESTART_LOG_DIR $PROJ_DIR/logs/restart
+setenv DS_COMM_TIMEOUT_MSECS 60000
+setenv PAPER_SIZE 500x700+60+60
+
+setenv AOAWS_PAPER_SIZE 535x782+30+30
+setenv AOAWS_WMDS_SERVER oberon
+
+# --- site info --- 
+
+if (-f $PROJ_DIR/system/params/site_info) then
+  source $PROJ_DIR/system/params/site_info
+endif
+
+# --- MUAN test --- 
+
+if (-f $PROJ_DIR/display/params/set_Muan_envs) then
+  source $PROJ_DIR/display/params/set_Muan_envs
+endif
+
+# PGI compiler
+
+setenv PGI /usr/local/pgi
+setenv LM_LICENSE_FILE $PGI/license.dat
+
+# LD_LIBRARY_PATH
+
+#setenv LD_LIBRARY_PATH $HOME/anaconda/lib:$BUILD_DIR/lib:/usr/local/lib:/usr/local/gcc/lib:/usr/local/netcdf4/lib:/usr/local/hdf5/lib
+
+setenv LD_LIBRARY_PATH $BUILD_DIR/lib:/usr/local/lib:/usr/local/gcc/lib:/usr/local/netcdf4/lib:/usr/local/hdf5/lib
+
+# LD_RUN_PATH
+
+#setenv LD_RUN_PATH :$PGI/lib:/usr/local/lib:/usr/local/gcc/lib:/usr/local/dcs/lib:/usr/local/lib:/usr/local/parasoft/lib:/opt/intel/ipp/sharedlib:/usr/local/netcdf4/lib:/usr/local/netcdf/lib:/usr/local/hdf5/lib
+
+# PYTHON PATH
+
+setenv PYTHONPATH :/usr/local/python/src:
+#setenv PYTHONPATH :$HOME/anaconda/pkgs:
+
+# GMT
+
+setenv NETCDFHOME /usr/local/netcdf
+setenv GMTHOME /home/dixon/gmt/data
+
+setenv CLASSPATH .:$HOME/rap/java/ext_lib/jdom/jdom_b9/jdom.jar:$HOME/rap/java/ext_lib/jai/jai-1_1_1_01/jai_codec.jar:$HOME/rap/java/src:$HOME/rap/java/src/junit3.8.1/junit.jar
+#setenv CLASSPATH .
+
+setenv JAVA_HOME /usr/local/jdk
+setenv ANT_HOME /usr/local/ant
+
+/bin/mkdir -p ${PROJ_DIR}/junk/scripts
+
+set path=( . $RAP_BIN_DIR $RAP_SHARED_BIN_DIR $RAP_MAKE_BIN_DIR /rap/bin ~/bin ~/cvs/bin /rap/dev/bin )
+set path=( $path /usr/local/netcdf4/bin )
+set path=( $path $DYNAMO_PROJ_DIR/display/scripts )
+set path=( $path $PROJ_DIR/*/scripts $PROJ_DIR/script_bin )
+
+set path=( $path $JAVA_HOME/bin )
+set path=( $path $ANT_HOME/bin )
+set path=( $path /home/dixon/gmt/bin )
+set path=( $path $PGI/bin )
+set path=( $path /usr/local/dcs/bin )
+set path=( $path /home/dixon/eclipse )
+set path=( $path ~/scala/bin )
+#set path=( $path $HOME/anaconda/bin )
+set path=( $path /usr/local/python/bin )
+set path=( $path /tools/purify/bin /usr/local/jdk/bin /usr/local/lib/gcc-lib /usr/lib /bin /tools/matlab6.5/bin /tools/matlab/bin /usr/sbin /usr/bsd /tools/parasoft/insure/bin /opt/bin /usr/local/bin /usr/bin /usr/bin/X11 )
+
+#  INTERACTIVE SHELL ONLY
+
+if ($?prompt) then
+
+	set prompt = "`hostname`:\!>"
+	alias cd 'cd \!* ; echo $cwd'
+	alias rm 'rm -i'
+
+	alias ls 'ls -F'
+	alias dir 'ls -lgF \!* | more'
+	alias mail Mail
+	alias h history 1000
+
+	alias df 'df -k'
+	set filec
+
+	set history=1000
+
+        set fignore = (.o .ln)
+
+	stty intr 
+	stty erase 
+	set ttystr = `tty`
+	set host = `hostname | sed -e 's/\..*$//'`
+
+	alias catw 'cat `which \!*`'
+	alias lessw 'less `which \!*`'
+
+#      qmake - make for Qt
+
+#      alias qmake 'qmake-qt4'
+
+#     temporary settings: suspend file substitution, set alias alias
+
+#	set noglob  
+
+	alias sc source ~/.cshrc
+
+#     working directories
+
+      alias cda 'cd $WORK/apps'
+      alias cdaa 'cd $WORK/apps/aoaws/src'
+      alias cdl 'cd $WORK/libs'
+      alias cdi 'cd $WORK/incs'
+      alias cdin 'cd $WORK/apps/ingest/src'
+      alias cdrad 'cd $WORK/apps/radar/src'
+      alias cdt 'cd $WORK/apps/titan/src'
+      alias cdtr 'cd $WORK/java/src/edu/ucar/rap/titan/TrControl'
+      alias cdd 'cd $WORK/apps/didss/src'
+      alias cdds 'cd $WORK/apps/dsserver/src'
+      alias cdh 'cd $WORK/apps/hydro/src'
+      alias cdta 'cd $WORK/apps/titan_analysis/src'
+      alias cdsa 'cd $WORK/apps/safrica/src'
+      alias cdtest 'cd $WORK/test'
+      alias cdjrp 'cd $WORK/java/src/edu/ucar/rap/jrp'
+      alias cdrdas 'cd $WORK/java/src/edu/ucar/rap/titan/RdasControl'
+      alias cdsys 'cd $WORK/java/src/edu/ucar/rap/sysview'
+      alias rvp8 'cd $WORK/apps/rvp8/src'
+
+#   a. Directory movement - (actually problematic on DS3100;s)
+
+      alias setprompt 'set prompt="(`hostname`) `basename $cwd` ! % "'
+      alias rename_xterm 'echo -n "]0;\!*"'
+#      alias cd 'cd \!*;setprompt;rename_xterm $host-$ttystr (`dirs`)'
+      alias cd 'cd \!*;setprompt'
+      alias push 'pushd \!*; cd .'
+      alias pop 'popd; cd .'
+
+#   b. System queries
+
+      alias weather 'finger weather@unidata.ucar.edu'
+      alias psg 'ps -aux | grep -v grep | grep'
+      alias psa 'ps -aux | more' 
+      alias looka 'grep \!* /usr/lib/aliases'
+      alias lookg 'grep \!* /etc/group'
+      alias lookp 'grep \!* /etc/passwd'
+      alias lookh 'grep \!* /etc/hosts'
+
+#   c. File display
+
+      alias m 'more'
+
+#   f. Job control
+
+      alias psd 'ps -ef | grep dixon'
+      alias pps 'ps -ef | egrep -v egrep | egrep $USER'
+      alias ppq 'pps | grep -v rsh | grep -v xterm | grep -v emacs | grep -v tcsh | grep -v /usr | grep -v defunct'
+      alias j 'jobs -l'
+      alias k9 'kill -9 \!*'
+      alias nuke 'ps -ax | grep -v grep | grep \!* | kill -9 `awk -f ~/.awk.kill`'
+
+#   g. terminal control - just the typical ttys
+
+      alias se 'stty erase '
+      alias sb 'stty erase '
+      alias vt100 'set term=vt100; tset -Q'
+      alias busy 'biff n; msg n'
+      alias free 'biff y; msg y'
+
+#   h. File deletion protection
+
+       alias rm 'rm -i'
+       alias mv 'mv -i'
+       alias cp 'cp -i' 
+
+# Mail aliases
+
+	alias mailcm 'mail charlie_martin@ncar.ucar.edu < charlie'
+	alias mailtl 'mail uesjw%MTSUNIX1.BITNET@CORNELLC.cit.cornell.edu < tl'
+	alias mailas 'mail asimpson@augean.oz.au < angus'
+	alias maildg 'mail daveg@fred.den.mmc.com < dave'
+        alias mailjw 'mail waterman < waterman'
+	alias mailkb 'mail kurt@ecn.purdue.edu < ~/mail/kurt'
+
+# Talk aliases
+
+	alias talkmb 'talk brewer@yakima.earthsci.do.usbr.gov'
+
+#
+# enscript alias
+
+  alias ensc 'enscript -2r -fCourier7 -Pheather'
+
+#
+# make makefile alias
+
+  alias mkmf 'make -f Makefile.cpp mf'
+
+#
+# rlogins
+#
+	alias thunder 'rlogin thunder'
+	alias storm 'rlogin storm'
+	alias virga 'rlogin virga'
+	alias tempest 'rlogin tempest'
+	alias tornado 'rlogin tornado'
+	alias root 'rlogin `hostname` -l root'
+	alias dog '/usr/demos/bin/dog &'
+#
+#       remote shell for emacs - example
+#
+#        alias dmacs 'xhost +\!*; rsh \!* -n "setenv DISPLAY `hostname`:0.; emacs -fn 8x13 &" & '
+
+#
+#	lint comand line
+#
+	alias ll lint_file
+#
+#	set coredump size to 0
+#
+#	limit coredumpsize 0
+
+#
+# cvs
+#
+
+	alias cvsu 'cvs update'
+	alias cvsun 'cvs update | grep -v tdrp'
+	alias cvssh 'ssh -a -x -C -R 2401:cvs:2401 aoaws@mail.aoaws.caa.gov.tw'
+	alias cvscp2 'ssh -a -XY -C -R 2401:cvs:2401 titan5@134.178.131.50'
+	alias cvsturkey 'ssh -a -XY -C -R 2401:cvs:2401 titan@212.175.180.97'
+	alias cvsipmet 'ssh -a -x -C -R 2401:cvs:2401 titan@200.145.151.199'
+	alias cvscemaden 'ssh -a -x -C -R 2401:cvs:2401 titan@200.145.151.131'
+	alias cvsarc2 'ssh -a -x -C -R 2401:cvs:2401 titan5@64.105.152.194'
+	alias cvsarc 'ssh -a -XY -R 2401:cvs:2401 -p 513 titan5@74.7.179.187'
+	alias cvsdow 'ssh -p 22 -a -XY -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 titan5@eldora-router.fl-guest.ucar.edu'
+	alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 dixon@eldora-router.fl-guest.ucar.edu'
+	alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs:2401 titan5@71.33.231.76'
+	alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
+	alias cvshangar 'ssh -a -x -C -R 2401:cvs:2401 titan5@121.215.243.79'
+	alias cvsbom 'ssh -a -x -C -R 2401:cvs:2401 mdixon@titandev6.bom.gov.au'
+#	alias cvsspol 'ssh -a -x -X -C -R 2401:cvs:2401 -L 5443:mgen.gate.rtf:5443 -p 20022 spol@spol-gate.front.ucar.edu'
+	alias cvsspol 'ssh -p 20022 -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 -L 5443:mgen1.gate.rtf:5443 spol@spol.dyndns.org'
+	alias cvsspol1 'ssh -p 20022 -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.79.2'
+	alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
+	alias cvsarchiver 'ssh -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
+	alias cvsarchiver2 'ssh -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.fl-guest.ucar.edu'
+	alias cvshyper 'ssh -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@hyper.raf-guest.ucar.edu'
+	alias cvswards 'ssh -a -x -X -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 -p24 hcr@radar-router.eol.ucar.edu'
+	alias kband 'ssh -a -X -Y -C -R 2401:cvs:2401 hcr@radar-router.guest.ucar.edu'
+	alias hcr 'ssh -a -X -Y -C -R 2401:cvs:2401 -R 8888:svn.eol.ucar.edu:80 hcr@128.117.47.230'
+	alias svngate 'ssh -p 23 -a -x -X -C -R 8888:svn.eol.ucar.edu:80 operator@spol-gate.ucar.edu'
+	alias cvsate 'ssh -p 24 -a -x -X -C -R 2401:cvs:2401 operator@spol-gate.ucar.edu'
+	alias tunnelspol 'ssh -a -x -X -C -R 5443:refr1:5445 -R 5440:refr1:5440 -L 2512:iq:2512 operator@spol-gate.ucar.edu'
+
+	alias cvschill 'ssh -a -x -X -C -R 2401:cvs:2401 -p 20789 dixon@gw.chill.colostate.edu'
+        alias rsyncchill "rsync -av --rsh='ssh -p20789' dixon@gw.chill.colostate.edu:"
+
+	alias chilldisplay 'ssh -a -X -C -R 2401:cvs:2401 operator@128.117.82.183'
+
+	alias cvsstacy 'ssh -a -XY -C -R 2401:cvs:2401 meso@mjo.atmos.washington.edu'
+	alias stellar 'ssh -a -X -C -R 2401:cvs:2401 meso@stellar.atmos.washington.edu'
+	alias eyewall 'ssh -a -X -C -R 2401:cvs:2401 meso@eyewall.atmos.washington.edu'
+
+        alias mgen 'ssh -a -x -C -R 2401:localhost:2401 operator@mgen'
+        alias pgen 'ssh -a -x -C -R 2401:localhost:2401 operator@pgen'
+
+	alias gotest 'ssh -a -X -Y -C dixontest@titan'
+
+	alias kband 'ssh -a -X -Y -C -R 2401:cvs:2401 hcr@radar-router.eol.ucar.edu'
+	alias sdsmt 'ssh -a -X -Y -C -R 2401:cvs:2401 cidd@funnel.ias.sdsmt.edu'
+
+	alias spol1850 'ssh -a -X -Y -C -R 2401:cvs:2401 operator@128.117.78.55'
+	alias shiraz 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@shiraz.eol.ucar.edu'
+	alias tikal 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@tikal.eol.ucar.edu'
+	alias rh32 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@rsf-rh532.eol.ucar.edu'
+	alias rh64 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@rsf-rh564.eol.ucar.edu'
+	alias dc3 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@rhsc.eol.ucar.edu'
+	alias tesla_eol 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@tesla.eol.ucar.edu'
+	alias hawk 'ssh -a -X -Y -C -R 2401:cvs:2401 operator@hawk.eol.ucar.edu'
+        alias cvsxpol 'ssh -a -X -Y -C -R 2401:cvs:2401 radarop@128.117.47.241'
+#        alias cvsxpol 'ssh -a -X -Y -C -R 2401:cvs:2401 radarop@xpol'
+        alias xpol_camera 'ssh -L 8080:192.168.99.101:80 dixon@cumulus'
+        alias vapor 'ssh -a -X -Y -C ice@vapor'
+#	alias xpol 'ssh -a -X -Y -C -R 2401:cvs:2401 radarop@128.117.47.56'
+	alias ice 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@ice.eol.ucar.edu'
+	alias tikal 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@tikal.eol.ucar.edu'
+	alias titan 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@titan.eol.ucar.edu'
+	alias eldora 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@eldora.eol.ucar.edu'
+	alias vdras 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@vdras.eol.ucar.edu'
+	alias front 'ssh -a -X -Y -C -R 2401:cvs:2401 -p 23 dixon@front.eol.ucar.edu'
+	alias aeolus 'ssh -a -X -Y -C -R 2401:cvs:2401 -p 23 dixon@aeolus.eol.ucar.edu'
+#	alias eldora 'ssh -a -X -Y -C -R 2401:cvs:2401 operator@eldoranetfw.eol.ucar.edu'
+	alias cp2data 'ssh titan5@cp2data'
+#	alias cvs cvs -d $CVSROOT \!*
+	alias ccvs 'cvs -d :pserver:anonymous@lab.chill.colostate.edu:/home/cvs \!*'
+	alias cvs 'cvs -d :pserver:dixon@cvs:/cvs \!*'
+	alias cvsclosed 'cvs -d :pserver:dixon@cvs:/cvs_closed \!*'
+	alias aoaws 'ssh -Y aoaws@mail.aoaws.caa.gov.tw'
+	alias ssh 'ssh -Y'
+	alias sshhome 'ssh -Y 12.253.86.112'
+	alias cvshome 'ssh -a -x -C -R 2401:cvs:2401 71.237.89.27'
+	alias sshh 'ssh aoaws@helene'
+
+	alias build32 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@rsf-rh532.eol.ucar.edu'
+	alias build64 'ssh -a -X -Y -C -R 2401:cvs:2401 dixon@rsf-rh564.eol.ucar.edu'
+
+# alias cvs2mail 'ssh -a -x -C -R 2401:cvs:2401 aoaws@210.65.8.66'
+
+        alias aoaws_gate 'ssh -p 11024 -a -C ncar@210.65.8.66'
+        alias cvs2mail 'ssh -p 11024 -a -x -C -R 2401:cvs:2401 ncar@210.65.8.66'
+        alias cvsforward22 'ssh -p 22 -a -x -C -R 2401:localhost:2401'
+
+	# alias cvshome 'ssh -a -x -C -R 2401:cvs:2401 mikedixon.homelinux.org'
+	alias cvsr 'ssh -a -x -C -R 2401:cvs:2401'
+	alias saws 'ssh titan5@196.25.43.229'
+	alias cvssaws 'ssh -a -x -C -R 2401:cvs:2401 titan5@196.25.43.229'
+
+	alias savedvd 'growisofs -Z /dev/dvd -r -J'
+	alias saveiso2dvd 'growisofs -dvd-compat -Z /dev/dvd='
+
+    alias cvsforward 'ssh -a -x -C -R 2401:localhost:2401'
+
+    alias ppm 'print_procmap -hb -up -status'
+    alias pcheck 'procmap_list_check -proc_list $PROJ_DIR/control/proc_list'
+    alias pdm 'PrintDataMap -all -relt -lreg'
+    alias rd '/usr/local/rdesktop/bin/rdesktop -g1280x1024 -a 24 vise &'
+    alias rd1 '/usr/local/rdesktop/bin/rdesktop -g1600x1170 -a 24 vise &'
+    alias pliers 'rdesktop -g1920x1100 -a 24 -r disk:home=${HOME} pliers &'
+    alias tesla 'rdesktop -g1900x1130 -a 16 -d cit -u dixon -r disk:home=${HOME} tesla &'
+    alias tesla2 'xfreerdp -g 1900x1130 -a 24 -u dixon -d CIT -z --plugin cliprdr --plugin rdpdr --data disk:dixon:/home/dixon/mswindows_files -- tesla'
+    alias hometesla 'rdesktop -g1900x1000 -a 24 -d cit -u dixon -r disk:home=${HOME} tesla &'
+    alias volt 'rdesktop -g1900x1130 -a 24 -d cit -u dixon -r disk:home=${HOME} volt &'
+
+    alias ppl '\!* -print_params | less'
+
+# Reset
+
+#      unset noglob
+#
+   endif
+
+#
+#  D. Reset the prompt
+
+   cd .
+#
+
+#setenv BATCH_MODE "1"
+#setenv INPUT_FORMAT "UF_FORMAT"
+#setenv OUTPUT_FLAGS "SWEEP_FILES"
+#setenv RADAR_NAME "MITLL"
+#setenv SOURCE_DEV "/scratch/.stolte/MITLL_19930223_f218.uf"
+
+# xltrs3 testing with DOW8
+
+#setenv INPUT_FORMAT 		"PIRAQX_FORMAT"
+#setenv SOURCE_DEV 		"$home/downloads/cswr/Data-Tue-Dec-10-23_39_47-2013.Channel-0.Sweep-1331.piraqx"
+#setenv OUTPUT_FLAGS		"NO_CATALOG SWEEP_FILES"
+#setenv COMPRESSION_SCHEME 	"HRD_COMPRESSION"
+#setenv OPTIONS			"WINDOWS_DOW SIMPLE_SWEEPS RABID PIRAQX_TRUST_TIME PIRAQX_100x_NANOSECS"
+#setenv DORADE_DIR 		"/tmp/dow8"
+
+unsetenv INPUT_FORMAT
+unsetenv SOURCE_DEV
+unsetenv OUTPUT_FLAGS
+unsetenv COMPRESSION_SCHEME
+unsetenv OPTIONS
+unsetenv DORADE_DIR
+
+####################################
+# Sweep file processing thresholds #
+####################################
+#setenv MIN_RAYS_PER_SWEEP 	1
+#setenv MAX_RAYS_PER_SWEEP 	2000
+#setenv MIN_AZ_DIFF 		0.01
+#setenv MIN_EL_DIFF 		0.1
+#setenv MAX_EL_DIFF 		0.01
+#setenv MAX_RHI_DIFF 		7.0
+#setenv MIN_FXD_DIFF 		0.1
+#setenv MAX_FXD_DIFF 		1.0
+#setenv AZ_SECTORS               "1 < 359"
+setenv PPI_EL_TOL		0.01  # 0.5
+setenv NUM_AZ_DIFFS_AVGD 	5
+#setenv NUM_EL_DIFFS_AVGD 	5
+setenv NUM_SHORT_AVG 		5
+
+# hrd testing
+
+#setenv INPUT_FORMAT HRD_FORMAT
+#setenv BATCH_MODE
+#setenv OUTPUT_FLAGS "SWEEP_FILES"
+#setenv DORADE_DIR /tmp/dorade
+#setenv PROJECT_NAME test
+#setenv RADAR_NAME test
+#setenv SOURCE_DEV /tmp/hrd/2003.06.10.032000
+   
+#unsetenv BATCH_MODE
+#unsetenv INPUT_FORMAT
+#unsetenv OUTPUT_FLAGS
+#unsetenv RADAR_NAME
+#unsetenv SOURCE_DEV
+#unsetenv DORADE_DIR
+#unsetenv PROJECT_NAME
+
+setenv RADAR_NAME thills
+setenv DBZ_THRESHOLD 35
+setenv DUAL_THRESHOLD 40

@@ -1,0 +1,45 @@
+#! /usr/local/bin/perl
+
+#
+# count strings
+#
+# count the occurrences of a string in a file 
+#
+
+sub print_usage {
+
+  printf(STDERR "Usage : cat file | $prog string\n");
+
+}
+
+#
+# check usage
+#
+
+($prog = $0) =~ s%.*/%%;
+ 
+if (@ARGV != 1) {
+  &print_usage();
+  exit(-1);
+}
+
+$search_str = shift(@ARGV);
+
+#
+# open file
+#
+
+$count = 0;
+
+while ($line = <STDIN>) {
+
+  while ($line =~ /$search_str/g) {
+    $count++;
+  }
+
+}
+
+printf(STDOUT "\n%s occurred %d times\n\n",
+       $search_str, $count);
+
+exit(0);

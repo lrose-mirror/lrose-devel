@@ -1,0 +1,6 @@
+ln -s /home/dixon/lib/llib-lgutil.ln /usr/lib/lint/llib-lgutil.ln
+ln -s /home/dixon/lib/llib-lpsutil.ln /usr/lib/lint/llib-lpsutil.ln
+ln -s /home/dixon/lib/llib-lrfutil.ln /usr/lib/lint/llib-lrfutil.ln
+ln -s /home/dixon/lib/llib-lsockutil.ln /usr/lib/lint/llib-lsockutil.ln
+ln -s /home/dixon/lib/llib-lutil.ln /usr/lib/lint/llib-lutil.ln
+ln -s /home/dixon/lib/llib-lxutil.ln /usr/lib/lint/llib-lxutil.ln

@@ -1,0 +1,77 @@
+#! /bin/csh
+
+#
+# Link source directories
+#
+# Creates links if they do not exist
+#
+# usage: link_source src_dir dest_dir
+#
+
+if ($#argv != 2) then
+  echo usage: link_source src_dir dest_dir
+  exit(-1)
+endif
+
+set src_dir = $1
+set dest_dir = $2
+
+cd $src_dir
+
+foreach sub_dir (*)
+
+  if (-d $sub_dir && $sub_dir !~ bin && $sub_dir !~ lib) then
+
+#
+#   directories
+#
+
+    echo "***** linking $sub_dir"
+
+    if (!(-e $dest_dir/$sub_dir)) then
+      mkdir $dest_dir/$sub_dir
+    endif
+
+    cd $src_dir/$sub_dir
+
+    foreach file (lint_filter.* macros.* Makefile* *.c *.h)
+
+      set link = $dest_dir/$sub_dir/$file
+      set src_file = $src_dir/$sub_dir/$file
+
+      if (!(-e $link)) then
+        ln -s $src_file $link
+      endif
+
+    end
+
+    cd ..
+
+  endif
+
+end
+
+#
+#   files
+#
+
+foreach file (Makefile*) 
+
+  set link = $dest_dir/$file
+  set src_file = $src_dir/$file
+
+  if (!(-e $link)) then
+    ln -s $src_file $link
+  endif
+
+end
+
+#
+# make lib and bin directories
+#
+ 
+mkdir $dest_dir/bin
+mkdir $dest_dir/lib
+
+
+

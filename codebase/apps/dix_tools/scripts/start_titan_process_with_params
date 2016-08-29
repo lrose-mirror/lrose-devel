@@ -1,0 +1,28 @@
+#! /bin/csh
+
+#
+# start titan process with a particular set of params
+#
+# $1 : bin name
+# $1 : params
+#
+
+#
+# set reference directory and go there
+#
+
+set dref = $TITAN_HOME
+cd $dref
+
+#
+# start new process
+#
+
+echo "Starting $1.$2"
+
+if (-e $dref/log/$1.$2) then
+  mv $dref/log/$1.$2 $dref/log/$1.$2.prev
+endif
+
+$dref/bin/$1 -params $dref/params/$1.$2 >& $dref/log/$1.$2 &  
+

@@ -1,0 +1,26 @@
+#! /bin/csh
+
+set type = $1
+
+touch $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/07_19:30:00 -end 1992/06/07_22:30:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/08_20:00:00 -end 1992/06/09_01:30:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/11_21:00:00 -end 1992/06/12_01:20:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/15_00:30:00 -end 1992/06/15_03:20:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/22_22:20:00 -end 1992/06/23_02:00:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/23_20:00:00 -end 1992/06/24_00:30:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/24_19:00:00 -end 1992/06/25_00:15:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/26_20:40:00 -end 1992/06/27_01:00:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/27_19:45:00 -end 1992/06/27_22:45:00 >> $TITAN_HOME/fstats/$type.out
+
+ftrack_generate -params $TITAN_HOME/params/ftrack_generate.$type -start 1992/06/28_18:25:00 -end 1992/06/29_00:15:00 >> $TITAN_HOME/fstats/$type.out
+

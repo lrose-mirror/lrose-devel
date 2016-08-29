@@ -1,0 +1,12 @@
+#! /bin/csh -f
+
+############################################################################
+#
+# renames .vfy files to .dob files
+#
+
+foreach i (*.vfy)
+        set file = $i:r.dob
+        mv $i $file
+end
+

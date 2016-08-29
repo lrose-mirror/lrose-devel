@@ -1,0 +1,307 @@
+#! /usr/local/bin/perl
+
+#
+# script to check the status of processes on a remote host relative to an
+# expected process list
+#
+# Usage :
+#   check_remote_processes host process_list [BSD, SYSV] [status, down]
+#
+# 'status' - returns report on all processes
+# 'down' - returns report on all processes which are down, except those
+#   with the word 'non-essential' in the description list
+#
+
+#
+# subroutine to get string up to a pattern
+#
+#
+# usage: get_before ($a, $b) - returns the string up to $b in $a
+#
+
+sub get_before {
+
+  local ($target, $pattern) = @_;
+
+  $pos = index($target, $pattern);
+
+  if ($pos != -1) {
+  
+    $start = 0;
+    $before = substr($target, $start, $pos);
+    return $before;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# subroutine to get remainder of string beyond search pattern
+#
+#
+# usage: get_rem ($a, $b) - returns the string beyond $b in $a
+#
+
+sub get_rem {
+
+  local ($target, $pattern) = @_;
+
+
+  $pos = index($target, $pattern);
+  
+  if ($pos != -1) {
+
+    $remainder = substr($target, $pos + length($pattern),
+			length($target) - $pos);
+    return $remainder;
+
+  } else {
+
+    return $target;
+
+  }
+
+}
+
+#
+# main routine
+#
+# check usage
+#
+
+($prog = $0) =~ s%.*/%%;
+
+$usage = "Usage : $prog host process_list [BSD, SYSV] [status, down, monitor]";
+ 
+if (@ARGV != 4) {
+
+  print("$usage\n");
+  exit(-1);
+
+}
+
+$host = shift(@ARGV);
+$expected_procs_file = shift(@ARGV);
+$host_os = shift(@ARGV);
+$mode = shift(@ARGV);
+
+if ($mode =~ /status/) {
+  $print_running = 1;
+  $print_down = 1;
+  $print_non_essential = 1;
+  $monitor_mode = 0;
+} elsif ($mode =~ /down/) {
+  $print_running = 0;
+  $print_down = 1;
+  $print_non_essential = 0;
+  $monitor_mode = 0;
+} elsif ($mode =~ /monitor/) {
+  $print_running = 0;
+  $print_down = 1;
+  $print_non_essential = 0;
+  $monitor_mode = 1;
+} else {  
+  print("$usage\n");
+  exit(-1);
+}
+
+#
+# Is this BSD or SysV?
+#
+	
+if ($host_os =~ BSD) {
+  $bsd = 1;
+} elsif ($host_os =~ SYSV) {
+  $bsd = 0;
+} else {
+  print("$usage\n");
+  exit(-1);
+}
+
+#
+# get the current processes
+#
+
+if ($bsd) {
+  $current_procs = `rsh $host ps axww`;
+} else {
+  $current_procs = `rsh $host ps \-ef`;
+}
+
+#
+# get expected procs
+#
+
+open(EXPECTED, "rsh $host cat $expected_procs_file |");
+
+#
+# in monitor mode, open STDOUT to a tmp file. Otherwise,
+# STDOUT is left as default
+#
+
+if ($monitor_mode) {
+  $tmp_file = "/tmp/$prog.$$";
+  open (SAVEOUT, ">&STDOUT");
+  open (STDOUT, ">$tmp_file") || die "Cannot redirect STDOUT: $!\n";
+}
+
+#
+# print header
+#
+
+$datetime = `date`;
+chop($date);
+
+$whoami = `whoami`;
+chop($whoami);
+
+print("\n$whoami\@$host : $datetime\n");
+
+#
+# loop through the lines in the expected file
+#
+
+$all_running = 1;
+$all_down = 1;
+$n_running = 0;
+$n_down = 0;
+$n_essential_down = 0;
+
+while ($exp_entry = <EXPECTED>) {
+
+  if (index($exp_entry, ">") == 0) {
+
+    #
+    # notes
+    #
+
+    $note = $exp_entry;
+    $note =~ s/^>//;
+    $note =~ s/^\s*//;
+    chop($note);
+    print ("$note\n");
+
+  } elsif (index($exp_entry, "#") != 0 && index($exp_entry, ":") > 0) {
+
+    #
+    # process string is before comma, description after comma
+    #
+
+    $expected_proc = &get_before($exp_entry, ":");
+    $remainder = &get_rem($exp_entry, ":");
+    $description = &get_before($remainder, ":");
+    $startup = &get_rem($remainder, ":");
+
+    #
+    # remove whitespace at start or end of strings
+    #
+
+    $expected_proc =~ s/^\s*//;
+    $expected_proc =~ s/\s*$//;
+
+    $description =~ s/^\s*//;
+    $description =~ s/\s*$//;
+
+    $startup =~ s/^\s*//;
+    $startup =~ s/\s*$//;
+
+    #
+    # check for essential status
+    #
+
+    if ($description =~ /non-essential/) {
+      $essential = 0;
+    } else {
+      $essential = 1;
+    }
+
+    #
+    # search for strings either with a space or '/' at the
+    # start and a space or '\n' at the end
+    #
+
+    $expected_str_1 = " " . $expected_proc . " ";
+    $expected_str_2 = "/" . $expected_proc . " ";
+    $expected_str_3 = " " . $expected_proc . "\n";
+    $expected_str_4 = "/" . $expected_proc . "\n";
+
+    #
+    # check current procs for expected process 
+    #
+
+    if (index($current_procs, $expected_str_1) >= 0) {
+      $running = 1;
+      $n_running += 1;
+    } elsif (index($current_procs, $expected_str_2) >= 0) {
+      $running = 1;
+      $n_running += 1;
+    } elsif (index($current_procs, $expected_str_3) >= 0) {
+      $running = 1;
+      $n_running += 1;
+    } elsif (index($current_procs, $expected_str_4) >= 0) {
+      $running = 1;
+      $n_running += 1;
+    } else {
+      $running = 0;
+      $n_down += 1;
+    }
+
+    if ($running) {
+
+      $all_down = 0;
+
+      if ($print_running) {
+	print ("\n  RUNNING  : $description\n  $expected_proc\n");
+      }
+
+    } else {
+
+      $all_running = 0;
+
+      if ($print_down) {
+	if ($essential || (!$essential && $print_non_essential)) {
+	  print ("\n");
+	  print ("  **DOWN**\n");
+	  print ("  > $expected_proc < \n");
+	  print ("  $description\n");
+	  print ("  startup  : $startup\n");
+	  $n_essential_down += 1;
+	}
+      } # if ($print_down) 
+
+    } # if ($running)
+  
+  } # if (index($exp_entry, ...
+
+} # while ($exp_entry = <EXPECTED>) 
+
+if ($all_running && $n_running) {
+  print ("ALL PROCESSES RUNNING\n");
+} elsif ($all_down && $n_down) {
+  print ("ALL PROCESSES DOWN\n");
+}
+
+if ($monitor_mode) {
+
+  close(STDOUT);
+  open(STDOUT, ">&SAVEOUT");
+
+  #
+  # in monitor mode, print out if there are
+  # processes down
+  #
+
+  if ($n_down > 0) {
+    system("cat $tmp_file");
+  }
+
+  unlink($tmp_file);
+
+} # if ($monitor_mode)
+
+exit();
+
