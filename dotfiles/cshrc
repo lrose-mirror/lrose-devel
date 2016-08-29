@@ -29,8 +29,6 @@ setenv LESSCHARSET latin1
 
 set hostname=`hostname`
 
-setenv WORK $HOME/git/lrose-core/codebase
-
 setenv PROJ_DIR $HOME/projDir
 setenv RELEASES $HOME/releases
 
@@ -66,14 +64,14 @@ endif
 # Set the buil environment
 
 setenv LANG C
-setenv BUILD_DIR $WORK
-#setenv BUILD_DIR $HOME/build/cvs
+setenv BUILD_DIR $HOME/build
+setenv GITCODE $HOME/git/lrose-core/codebase
 
 setenv RAP_LIB_DIR $BUILD_DIR/lib
 setenv RAP_BIN_DIR $BUILD_DIR/bin
 
-setenv RAP_MAKE_INC_DIR $BUILD_DIR/make_include
-setenv RAP_MAKE_BIN_DIR $BUILD_DIR/make_bin
+setenv RAP_MAKE_INC_DIR $GITCODE/make_include
+setenv RAP_MAKE_BIN_DIR $GITCODE/make_bin
 
 setenv RAP_INC_DIR $BUILD_DIR/include
 setenv RAP_MAN_DIR $BUILD_DIR/man
@@ -407,27 +405,6 @@ if ($?prompt) then
 
   alias rsyncReleases2exposure "rsync -av ~/releases/* dixon@exposure.rap.ucar.edu:/ftp/root/pub/titan"
   alias rsyncReleases2titan "rsync -av ~/releases/* titan.eol.ucar.edu:releases"
-
-# working directories
-
-  alias cdw 'cd $WORK'
-  alias cds 'cd $HOME/src'
-  alias cdr 'cd $HOME/releases'
-  alias cdp 'cd $PROJ_DIR'
-  alias cda 'cd $WORK/apps'
-  alias cdl 'cd $WORK/libs'
-  alias cdi 'cd $WORK/incs'
-  alias cdin 'cd $WORK/apps/ingest/src'
-  alias cdrad 'cd $WORK/apps/radar/src'
-  alias cdt 'cd $WORK/apps/titan/src'
-  alias cdta 'cd $WORK/apps/titan_analysis/src'
-  alias cdd 'cd $WORK/apps/didss/src'
-  alias cdds 'cd $WORK/apps/dsserver/src'
-  alias cdh 'cd $WORK/apps/hydro/src'
-  alias cdjrp 'cd $WORK/java/src/edu/ucar/rap/jrp'
-  alias cdrdas 'cd $WORK/java/src/edu/ucar/rap/titan/RdasControl'
-  alias cdsys 'cd $WORK/java/src/edu/ucar/rap/sysview'
-  alias rvp8 'cd $WORK/apps/rvp8/src'
 
 # save to dvd
 
