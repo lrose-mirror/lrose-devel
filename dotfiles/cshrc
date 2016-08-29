@@ -29,8 +29,7 @@ setenv LESSCHARSET latin1
 
 set hostname=`hostname`
 
-setenv CVSDIR $HOME/cvs
-setenv WORK $HOME/work
+setenv WORK $HOME/git/lrose-code/codebase
 
 setenv PROJ_DIR $HOME/projDir
 setenv RELEASES $HOME/releases
@@ -67,7 +66,7 @@ endif
 # Set the buil environment
 
 setenv LANG C
-setenv BUILD_DIR $CVSDIR
+setenv BUILD_DIR $WORK
 #setenv BUILD_DIR $HOME/build/cvs
 
 setenv RAP_LIB_DIR $BUILD_DIR/lib
@@ -411,7 +410,7 @@ if ($?prompt) then
 
 # working directories
 
-  alias cdw 'cd $HOME/work'
+  alias cdw 'cd $WORK'
   alias cds 'cd $HOME/src'
   alias cdr 'cd $HOME/releases'
   alias cdp 'cd $PROJ_DIR'
