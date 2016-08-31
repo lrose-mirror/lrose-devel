@@ -172,7 +172,8 @@ if ( -d $PROJ_DIR ) then
   end
 endif
 
-set path = ($path ~/anaconda/bin)
+set path = ($path /usr/lib64/qt4/bin)
+#set path = ($path ~/anaconda/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
@@ -236,6 +237,11 @@ if ($?prompt) then
   alias clone-cfradial 'git clone https://github.com/NCAR/CfRadial'
   alias clone-lrose-core 'git clone https://github.com/NCAR/lrose-core'
   alias clone-lrose-netcdf 'git clone https://github.com/NCAR/lrose-netcdf'
+
+  alias gstat 'git status'
+  alias gcom 'git commit -am \!*'
+  alias gpush 'git push'
+  alias gpull 'git pull'
 
   alias xx 'xrdb -override ~/.Xdefaults'
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
