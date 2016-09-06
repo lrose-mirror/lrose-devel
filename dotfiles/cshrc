@@ -344,6 +344,7 @@ if ($?prompt) then
   alias ccvs 'cvs -d :pserver:anonymous@lab.chill.colostate.edu:/home/cvs \!*'
   alias cvschill 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -p 20789 dixon@gw.chill.colostate.edu'
   alias rsyncchill "rsync -av --rsh='ssh -p20789' dixon@xlab.chill.colostate.edu:"
+ alias rsyncspol "rsync -av --rsh='ssh -p20022' dspol@spol.dyndns.org:/tmp"
 
   alias chilldisplay 'ssh -a -X -C -R 2401:cvs.rap.ucar.edu:2401 operator@128.117.82.183'
 
