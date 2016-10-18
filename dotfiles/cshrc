@@ -86,7 +86,8 @@ setenv MY_NETCDF4_INCS
 setenv MY_NETCDF4_LIBS
 
 setenv MY_CFLAGS
-setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
+#setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
+setenv MY_CPPC_CFLAGS " -std=c++11 "
 
 setenv GCC_WARNINGS "-Wall"
 
