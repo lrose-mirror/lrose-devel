@@ -101,7 +101,7 @@ setenv FC gfortran
 
 # --- LD library path --
 
-#setenv LD_LIBRARY_PATH $RAP_LIB_DIR
+setenv LD_LIBRARY_PATH $RAP_LIB_DIR
 
 # --- NCAR GRAPHICS ---
 
