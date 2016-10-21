@@ -249,7 +249,7 @@ if ($?prompt) then
   alias gpush 'git push'
   alias gpull 'git pull'
   alias gdiff 'git diff '
-  alias gdtool 'git difftool -g -y '
+  alias gdt 'git difftool -g -y '
 
   alias xx 'xrdb -override ~/.Xdefaults'
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
