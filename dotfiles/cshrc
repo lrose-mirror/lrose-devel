@@ -61,7 +61,7 @@ endif
 # Set the build environment
 
 setenv LANG C
-setenv INSTALL_DIR $HOME/build
+setenv INSTALL_DIR $HOME/lrose
 setenv CODEBASE $HOME/git/lrose-core/codebase
 
 setenv RAP_LIB_DIR $INSTALL_DIR/lib
@@ -178,6 +178,7 @@ if ( -d $PROJ_DIR ) then
   end
 endif
 
+set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt4/bin)
 set path = ($path ~/anaconda/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
@@ -321,7 +322,7 @@ if ($?prompt) then
   alias cvsbom 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 mdixon@titandev6.bom.gov.au'
   alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.51'
 #  alias cvsspol 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -L 5443:mgen.gate.rtf:5443 -p 20022 spol@spol-gate.front.ucar.edu'
-  alias cvsspol 'ssh -p 20022 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -L 5443:mgen1.gate.rtf:5443 spol@spol.dyndns.org'
+  alias cvsspol 'ssh -p 20022 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -L 15443:localhost:5443 spol@spol.dyndns.org'
 #  alias cvsspol1 'ssh -p 20022 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.79.2'
   alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
   alias hcr 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
