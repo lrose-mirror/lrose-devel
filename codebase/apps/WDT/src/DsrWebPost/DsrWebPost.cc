@@ -1,0 +1,1919 @@
+#include <fstream>
+#include <sstream>
+#include <fcntl.h>
+#include <toolsa/str.h>
+#include <toolsa/pmu.h>
+#include <toolsa/file_io.h>
+#include <toolsa/Path.hh>
+#include <toolsa/Socket.hh>
+#include <toolsa/sockutil.h>
+#include <toolsa/GetHost.hh>
+#include <bzlib.h>
+#include <sys/types.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <rapmath/math_macros.h>
+#include <dsserver/DsLdataInfo.hh>
+#include <dsserver/DsClient.hh>
+#include <rapformats/UfRecord.hh>
+#include <algorithm>
+#include "DsrWebPost.hh"
+
+using namespace std;
+
+DsrWebPost::DsrWebPost(int argc, char **argv)
+{
+    isOK = TRUE;
+    _scanType = -1;
+    _scanMode = -1;
+    _rayNumInVol = 0;
+    _snrCensorWarningPrinted = false;
+    
+    // 
+    // set programe name
+    //
+
+    _progName = "DsrWebPost";
+    ucopyright(_progName.c_str());
+    
+    //
+    // get command line args
+    //
+    
+    if( _args.parse(argc, argv, _progName ) )
+    {
+        cerr << "ERROR: " << _progName << endl;
+        cerr << "Problem with command line args" << endl;
+        isOK = false;
+        return;
+    }
+    
+    //
+    // get TDRP params
+    //
+    
+    _paramsPath = (char *) "unknown";
+    if( _params.loadFromArgs(argc, argv, _args.override.list, &_paramsPath) )
+    {
+        cerr << "ERROR: " << _progName << endl;
+        cerr << "Problem with TDRP parameters" << endl;
+        isOK = false;
+    }
+    
+    if( !isOK )
+    {
+        return;
+    }
+
+    //
+    // Set our radial status to intermediate
+    //
+    _radial_status = 1;
+    
+    //
+    // Azimuth number
+    //
+    _aznum = 0;
+    
+    //
+    // Azimuth spacing = 2 -> 1.0 degrees
+    //
+    _azspacing = 2;
+    _prevaz = -1;
+    _azdiff = 1.0;
+
+    //
+    // Sequence number
+    //
+    _sequence_num = 0;
+
+    //
+    // Message number
+    //
+    _message_num = 1;
+
+    //
+    // Output radials flag
+    //
+    _output_radials = false;
+
+    //
+    // Initialize the output file path to be empty
+    //
+    _outFilePath = "";
+
+    //
+    // Initialize the initial date/time string
+    //
+    _volDateTimeStr = "";
+
+    //
+    // Set the moment characteristics for type 31 messages
+    //
+    mom_conversion c;
+    c.byteWidth = 8;
+    c.offset = 66.0;
+    c.scale = 2.0;
+    c.dataMin = 2;
+    c.dataMax = 255;
+    _momCharacteristics["DREF"] = c;
+    c.byteWidth = 8;
+    c.offset = 129.0;
+    c.scale = 2.0;
+    c.dataMin = 2;
+    c.dataMax = 255;
+    _momCharacteristics["DVEL"] = c;
+    c.byteWidth = 8;
+    c.offset = 129.0;
+    c.scale = 2.0;
+    c.dataMin = 2;
+    c.dataMax = 255;
+    _momCharacteristics["DSW "] = c;
+    c.byteWidth = 8;
+    c.offset = 128.0;
+    c.scale = 16.0;
+    c.dataMin = 2;
+    c.dataMax = 255;
+    _momCharacteristics["DZDR"] = c;
+    c.byteWidth = 16;
+    c.offset = 2.0;
+    c.scale = 2.8361;
+    c.dataMin = 2;
+    c.dataMax = 1023;
+    _momCharacteristics["DPHI"] = c;
+    c.byteWidth = 8;
+    c.offset = -60.0;
+    c.scale = 300.0;
+    c.dataMin = 2;
+    c.dataMax = 255;
+    _momCharacteristics["DRHO"] = c;
+    
+    PMU_auto_init(_progName.c_str(), _params.instance, PROCMAP_REGISTER_INTERVAL);
+    
+}
+
+DsrWebPost::~DsrWebPost()
+{
+
+    // unregister process
+
+    PMU_auto_unregister();
+    
+    //
+    // Clean up the memory
+    //
+    for(vector< pair< Type31_Radar_message*,uint32_t > >::const_iterator it = _radials.begin(); it != _radials.end(); ++it)
+    {
+        free( it->first );
+    }
+    _radials.clear();
+}
+
+int DsrWebPost::Run ()
+{
+    PMU_auto_register("DsrWebPost::Run");
+    
+    //
+    // Instantiate and initialize the DsRadar queue and message
+    //
+
+    DsRadarQueue radarQueue;
+    DsRadarMsg radarMsg;
+    DsRadarFlags radarFlags;
+    DsRadarBeam beam;
+    DsRadarParams radarParams;
+
+    char buf[4];
+                
+    if( radarQueue.init( _params.input_fmq_url, _progName.c_str(),
+                _params.debug,
+                DsFmq::BLOCKING_READ_WRITE, DsFmq::END ))
+    {
+        cerr << "ERROR - DsrWebPost::Run" << endl;
+        cerr << "Could not initialize radar queue: " << _params.input_fmq_url << endl;
+        return(-1);
+    }
+    
+    //
+    // read beams from the queue and process them
+    //
+    
+    _rayNumInVol = 0;
+    int msgContents;
+    
+    //
+    // Loop forever
+    //
+
+    while(true)
+    {
+        bool end_of_vol = false;
+
+        if( _readMsg(radarQueue, radarMsg, msgContents, radarFlags, end_of_vol) == 0 )
+        {
+            if (_params.debug >= Params::DEBUG_VERBOSE)
+            {
+                cerr << "Read message from radar queue." << endl;
+            }      
+            
+            //
+            // Check to see if this is a RADAR_BEAM message
+            //
+            if( msgContents & DsRadarMsg::RADAR_BEAM )
+            {
+    
+                //
+                // Get the radar-specific parameters
+                //
+                radarParams = radarMsg.getRadarParams();
+                const vector<DsFieldParams*> &fieldParams = radarMsg.getFieldParams();
+
+                //
+                // get beam
+                //
+                beam = radarMsg.getRadarBeam();
+                if( _params.remove_antenna_transitions && beam.antennaTransition )
+                {
+                    continue;
+                }
+                
+                //
+                // Determine the azimuth spacing
+                //
+                _azspacing = 2;
+                if( _prevaz != -1 )
+                {
+                    _azdiff = beam.azimuth - _prevaz;
+                    if( _azdiff < 0 )
+                    {
+                        _azdiff += 360.0;
+                    }
+                    _prevaz = beam.azimuth;
+                } else
+                {
+                    _prevaz = beam.azimuth;
+                    _azdiff = 1.0;
+                }
+                if( _azdiff < 0.7 && _azdiff > 0.3 )
+                {
+                    _azspacing = 1;
+                } else
+                {
+                    _azspacing = 2;
+                }
+
+                //
+                // Increment the azimuth number
+                //
+                ++_aznum;
+                
+                if (_params.debug >= Params::DEBUG_VERBOSE)
+                {
+                    cerr << "RADAR_BEAM....." << endl;
+                    for (size_t fieldNum = 0; fieldNum < fieldParams.size(); fieldNum++)
+                    {
+                        cerr << "field: " << fieldNum << " name: " << fieldParams[fieldNum]->name.c_str() << " ";
+                        cerr << "  units: " << fieldParams[fieldNum]->units.c_str() << " ";
+                        cerr << "  byteWidth: " << fieldParams[fieldNum]->byteWidth << " ";
+                        cerr << "  scale: " << fieldParams[fieldNum]->scale << " ";
+                        cerr << "  bias: " << fieldParams[fieldNum]->bias << endl;
+                        cerr << "  missingDataValue: " << fieldParams[fieldNum]->missingDataValue << endl;
+                    }
+                    if( _params.override_radar_location )
+                    {
+                        string(_params.radar_location.name).copy( buf, 4, 0 );
+                        cerr << "radarParams.radarName: " << _params.radar_location.name << endl;
+                        cerr << "radarName: " << buf << endl;
+                    } else
+                    {
+                        radarParams.radarName.copy( buf, 4, 0 );
+                        cerr << "radarParams.radarName: " << radarParams.radarName << endl;
+                        cerr << "radarName: " << buf << endl;
+                    }
+                    cerr << "numFields: " << radarParams.numFields << endl;
+                    cerr << "numGates: " << radarParams.numGates << endl;
+                    cerr << "radarConstant: " << radarParams.radarConstant << endl;
+                    cerr << "scanType: " << radarParams.scanType << endl;
+                    cerr << "scanMode: " << radarParams.scanMode << endl;
+                    cerr << "unambigVelocity: " << radarParams.unambigVelocity << endl;
+                    cerr << "beam.volumeNum: " << beam.volumeNum << endl;
+                    if( _params.tilt_increment )
+                    {
+                         cerr << "beam.tiltNum: " << beam.tiltNum + 1 << endl;
+                    } else {
+                         cerr << "beam.tiltNum: " << beam.tiltNum << endl;
+                    }
+                    cerr << "beam.azimuth: " << beam.azimuth << endl;
+                    cerr << "beam.elevation: " << beam.elevation << endl;
+                    cerr << "beam.scanMode: " << beam.scanMode << endl;
+                    cerr << "beam.dataLen(): " << beam.dataLen() << endl;
+                    cerr << endl;
+                }
+
+                //
+                // Output radials if needed
+                //
+                if( _output_radials )
+                {
+                    _postRadials();
+                }
+
+                //
+                // Add the beam
+                //
+                _addBeam( beam, fieldParams, radarParams );
+                
+                //
+                // Reset the radial status
+                //
+                if (_params.debug >= Params::DEBUG_VERBOSE)
+                {
+                    cerr << "Setting _radial_status = 1" << endl;
+                }
+                _radial_status = 1;
+
+            } else if( msgContents & DsRadarMsg::RADAR_FLAGS )
+            {
+                //
+                // Dump some info
+                //
+                if (_params.debug >= Params::DEBUG_VERBOSE)
+                {
+                    cerr << "RADAR_FLAGS....." << endl;
+                    cerr << "radarFlags.startOfTilt: " << radarFlags.startOfTilt << endl;
+                    cerr << "radarFlags.endOfTilt: " << radarFlags.endOfTilt << endl;
+                    cerr << "radarFlags.startOfVolume: " << radarFlags.startOfVolume << endl;
+                    cerr << "radarFlags.endOfVolume: " << radarFlags.endOfVolume << endl;
+                    cerr << "radarParams.measXmitPowerDbmH: " << radarParams.measXmitPowerDbmH << endl;
+                    cerr << "radarParams.measXmitPowerDbmV: " << radarParams.measXmitPowerDbmV << endl;
+                    cerr << "radarParams.scanType: " << radarParams.scanType << endl;
+                    cerr << "radarParams.scanMode: " << radarParams.scanMode << endl;
+                    cerr << endl;
+                }
+
+                //
+                // Check the status
+                //
+                if( radarFlags.startOfVolume == 1 )
+                {
+                    if (_params.debug >= Params::DEBUG_NORM)
+                    {
+                        cerr << "Setting _radial_status = 3" << endl;
+                        cerr << "Creating new volume file. Old file: " << _outFilePath.c_str() << endl;
+                    }
+                    _radial_status = 3;
+                    if( _params.override_radar_location )
+                    {
+                        _startNewVolume( radarFlags.time, string(_params.radar_location.name).substr( 0, 4 ) );
+                    } else
+                    {
+                       std::string s ="KDBX";
+                       _startNewVolume(  radarFlags.time,s);
+                    //    _startNewVolume( radarFlags.time, radarParams.radarName.substr( 0, 4 ) );
+                    }
+                    
+                    //
+                    // Dump any transitional radials
+                    //
+                    _freeRadialMemory();
+
+                    _aznum = 0;
+                } else if( radarFlags.startOfTilt == 1 && _radial_status != 3 )
+                {
+                    if (_params.debug >= Params::DEBUG_NORM)
+                    {
+                        cerr << "Setting _radial_status = 0" << endl;
+                    }
+                    _radial_status = 0;
+                    _aznum = 0;
+                } else if( radarFlags.endOfTilt == 1 )
+                {
+                    if (_params.debug >= Params::DEBUG_NORM)
+                    {
+                        cerr << "Adjusting last radial: status = 2" << endl;
+                    }
+                    _adjustRadialStatus(2);
+                } else if( end_of_vol )
+                {
+                    if (_params.debug >= Params::DEBUG_NORM)
+                    {
+                        cerr << "Adjusting last radial: status = 4" << endl;
+                    }
+                    _adjustRadialStatus(4);
+                    //
+                    // Output radials
+                    //
+                    _postRadials();
+                }
+            } else if( msgContents & DsRadarMsg::RADAR_PARAMS )
+            {
+                //
+                // Dump some info
+                //
+                if (_params.debug >= Params::DEBUG_NORM)
+                {
+                    cerr << "RADAR_PARAMS....." << endl;
+                }
+            } else if( msgContents & DsRadarMsg::FIELD_PARAMS )
+            {
+                //
+                // Dump some info
+                //
+                if (_params.debug >= Params::DEBUG_NORM)
+                {
+                    cerr << "FIELD_PARAMS....." << endl;
+                }
+            } else if( msgContents & DsRadarMsg::RADAR_CALIB )
+            {
+                //
+                // Dump some info
+                //
+                if (_params.debug >= Params::DEBUG_NORM)
+                {
+                    cerr << "RADAR_CALIB....." << endl;
+                }
+            } else if( msgContents & DsRadarMsg::STATUS_XML )
+            {
+                //
+                // Dump some info
+                //
+                if (_params.debug >= Params::DEBUG_NORM)
+                {
+                    cerr << "STATUS_XML....." << endl;
+                }
+            }
+        }
+    }
+
+    return (0);
+}
+
+/*
+ *
+ * _readMsg()
+ *
+ * Read a message from the queue, setting the flags about beam_data
+ * and end_of_volume appropriately.
+ *
+*/
+
+int DsrWebPost::_readMsg(DsRadarQueue &radarQueue,
+             DsRadarMsg &radarMsg,
+             int &contents,
+             DsRadarFlags &radarFlags,
+             bool &end_of_vol) 
+{
+    PMU_auto_register("Reading radar queue");
+
+    //
+    // Read messages until all params have been set
+    //
+
+    int forever = TRUE;
+    int scan_type = 0;
+    while( forever )
+    {
+        if( radarQueue.getDsMsg( radarMsg, &contents ) )
+        {
+            return (-1);
+        }
+        
+        //
+        // check if parameters have been set,If so, accept the beam.
+        //
+    
+        if( radarMsg.allParamsSet() )
+        {
+            DsRadarParams &radarParams= radarMsg.getRadarParams();
+            scan_type = radarParams.scanType;
+            _scanMode = radarParams.scanMode;
+
+            // accept beam
+            break;
+
+        } 
+    }
+    
+    //
+    // is this an end of vol?
+    //
+  
+    end_of_vol = FALSE;
+    if( contents & DsRadarMsg::RADAR_FLAGS )
+    {
+        radarFlags = radarMsg.getRadarFlags();
+        if( _params.end_of_vol_decision == Params::END_OF_VOL_FLAG )
+        {
+            if (radarFlags.endOfVolume)
+            {
+                //
+                // end-of-vol flag
+                //
+                end_of_vol = TRUE;
+            }
+        } else if(radarFlags.endOfTilt && radarFlags.tiltNum == _params.last_tilt_in_vol)
+        {
+            //
+            // look last tilt in vol
+            //
+            end_of_vol = TRUE;
+        } else if(radarFlags.newScanType)
+        {
+            end_of_vol = TRUE;
+        }
+    }
+    if( _scanType >= 0 && _scanType != scan_type )
+    {
+        end_of_vol = TRUE;
+    }
+  
+    _scanType = scan_type;
+
+    return (0);
+}
+
+/*
+ *
+ * Add a beam to the vector
+ *
+ */
+
+void DsrWebPost::_addBeam( const DsRadarBeam& beam,
+                           const vector<DsFieldParams*> &fieldParams,
+                           const DsRadarParams& radarParams )
+{
+    Type31_Radar_message * type31_message;
+    
+    //
+    // byte width of our type 31 moment data
+    //
+    unsigned char type31ByteWidth = 8;
+    
+    //
+    // How many moments do we have?
+    //
+    // There should always be three standard blocks in a Type 31 message:
+    //
+    // 1. Volume data constant type
+    // 2. Elevation data constant type
+    // 3. Radial data constant type
+    //
+    // Plus at least a reflectivity moment...then any other moment types
+    //
+    // Dsr fields:
+    //
+    // DBZ, VEL, WIDTH, ZDR, RHOHV, PHIDP
+    
+    //
+    // Store the data block offsets in a vector
+    //
+    vector< uint32_t > blkoffsets;
+    
+     
+    //
+    // Base message size
+    //
+    uint32_t msgsize = sizeof(Type31_Radar_message);
+
+    //
+    // Volume data constant type
+    //
+    blkoffsets.push_back( msgsize - sizeof(NEXRAD_ctm_info) - sizeof(RDA_RPG_message_header_t));
+    msgsize += sizeof(Generic_vol_t);
+    
+    //
+    // Elevation data constant type
+    //
+    blkoffsets.push_back( msgsize - sizeof(NEXRAD_ctm_info) - sizeof(RDA_RPG_message_header_t));
+    msgsize += sizeof(Generic_elev_t);
+
+    //
+    // Radial data constant type
+    //
+    blkoffsets.push_back( msgsize - sizeof(NEXRAD_ctm_info) - sizeof(RDA_RPG_message_header_t));
+    msgsize += sizeof(Generic_rad_t);
+    
+    //
+    // Get the moment sizes
+    //
+    for (size_t fieldNum = 0; fieldNum < fieldParams.size(); fieldNum++)
+    {
+        blkoffsets.push_back( msgsize - sizeof(NEXRAD_ctm_info) - sizeof(RDA_RPG_message_header_t));
+        msgsize += sizeof(Generic_moment_t);
+        //
+        // Check if the moment type is PHI...then the byte width is 16...otherwise
+        // we set it to 8 bits
+        //
+        if( fieldParams[fieldNum]->name.find("PHIDP") != string::npos ||
+            fieldParams[fieldNum]->name.find("PHI") != string::npos ||
+            fieldParams[fieldNum]->name.find("PH") != string::npos )
+        {
+            type31ByteWidth = 2;
+        } else
+        {
+            type31ByteWidth = 1;
+        }
+        msgsize += type31ByteWidth * radarParams.numGates;
+    }
+
+    type31_message = (Type31_Radar_message*)malloc(msgsize);
+
+    //
+    // Set the block offsets
+    //
+    for( uint32_t u = 0; u < (sizeof(type31_message->basedata.data_block_pointers) / sizeof(uint32_t)); ++u )
+    {
+        if( u < blkoffsets.size() )
+        {
+            type31_message->basedata.data_block_pointers[u] = blkoffsets[u];
+            Swap::swap(type31_message->basedata.data_block_pointers[u]);
+        } else
+        {
+            type31_message->basedata.data_block_pointers[u] = 0;
+        }
+    }
+
+    type31_message->basedata.base.no_of_datum = 3 + radarParams.numFields;
+    Swap::swap(type31_message->basedata.base.no_of_datum);
+    type31_message->basedata.base.radial_length = msgsize - sizeof(NEXRAD_ctm_info) - sizeof(RDA_RPG_message_header_t);
+    Swap::swap(type31_message->basedata.base.radial_length);
+
+    //
+    // Collection date & time
+    //
+    time_t epoch = beam.dataTime;
+    type31_message->basedata.base.date = (uint16_t)( epoch / 86400 ) + 1;
+    Swap::swap(type31_message->basedata.base.date);
+    float temp = (float)epoch / 86400.0;
+    float temp2 = floor(((float)epoch / 86400.0));
+    int temp3 = (int)(( temp - temp2 ) * 86400.0);
+    type31_message->basedata.base.time = temp3 * 1000;
+    Swap::swap(type31_message->basedata.base.time);
+    
+    //
+    // Other message header stuff
+    //
+    if( _params.override_radar_location )
+    {
+        string(_params.radar_location.name).copy( type31_message->basedata.base.radar_id, 4, 0 );
+    } else
+    {
+        radarParams.radarName.copy( type31_message->basedata.base.radar_id, 4, 0 );
+    }
+    type31_message->basedata.base.azi_num = _aznum;
+    Swap::swap(type31_message->basedata.base.azi_num);
+    type31_message->basedata.base.azimuth = beam.azimuth;
+    Swap::swap(type31_message->basedata.base.azimuth);
+    type31_message->basedata.base.compress_type = 0;
+    type31_message->basedata.base.spare_17 = 0;
+    type31_message->basedata.base.azimuth_res = _azspacing;
+    if( _params.tilt_increment )
+    {
+        type31_message->basedata.base.elev_num = beam.tiltNum + 1;
+    } else {
+        type31_message->basedata.base.elev_num = beam.tiltNum;
+    }
+
+    //
+    // Radial status
+    //
+    type31_message->basedata.base.status = _radial_status;
+    
+    // 
+    // Set the sector number
+    //
+    if( beam.azimuth >= 0 && beam.azimuth < 30 )
+    {
+        type31_message->basedata.base.sector_num = 3;
+    } else if( beam.azimuth >= 30 && beam.azimuth < 210 )
+    {
+        type31_message->basedata.base.sector_num =  1;
+    } else if( beam.azimuth >= 210 && beam.azimuth < 335 )
+    {
+        type31_message->basedata.base.sector_num = 2;
+    } else if( beam.azimuth >= 335 && beam.azimuth < 360 )
+    {
+        type31_message->basedata.base.sector_num = 3;
+    }
+
+    type31_message->basedata.base.elevation = beam.elevation;
+    Swap::swap(type31_message->basedata.base.elevation);
+    type31_message->basedata.base.spot_blank_flag = 0;
+    type31_message->basedata.base.azimuth_index = 0;
+
+    //
+    // Fill the ctm data with 0s
+    //
+    memset( &(type31_message->ctm), 0, sizeof(NEXRAD_ctm_info) );
+
+    //
+    // Fill the RDA message header
+    //
+    type31_message->basedata.msg_hdr.size = ( msgsize - sizeof(NEXRAD_ctm_info) ) / 2;
+    Swap::swap(type31_message->basedata.msg_hdr.size);
+    type31_message->basedata.msg_hdr.rda_channel = 8;
+    type31_message->basedata.msg_hdr.type = 31; // Message type 31
+    type31_message->basedata.msg_hdr.sequence_num = _sequence_num;
+    Swap::swap(type31_message->basedata.msg_hdr.sequence_num);
+    if( _sequence_num == 65535 )
+    {
+        _sequence_num = 0;
+    } else
+    {
+        ++_sequence_num;
+    }
+    type31_message->basedata.msg_hdr.julian_date = type31_message->basedata.base.date;
+    type31_message->basedata.msg_hdr.milliseconds = type31_message->basedata.base.time;
+    type31_message->basedata.msg_hdr.num_segs = 1;
+    Swap::swap(type31_message->basedata.msg_hdr.num_segs);
+    type31_message->basedata.msg_hdr.seg_num = 1;
+    Swap::swap(type31_message->basedata.msg_hdr.seg_num);
+
+    //
+    // Generic_vol_t
+    //
+    Generic_vol_t volt;
+    volt.type[0] = 'R';
+    volt.type[1] = 'V';
+    volt.type[2] = 'O';
+    volt.type[3] = 'L';
+    volt.len = (uint16_t)sizeof(Generic_vol_t);
+    Swap::swap(volt.len);
+    volt.major_version = 1;
+    volt.minor_version = 0;
+    if( _params.override_radar_location )
+    {
+        volt.lat = _params.radar_location.latitude;
+        volt.lon = _params.radar_location.longitude;
+        volt.height = (int16_t)( _params.radar_location.altitude * 1000 + 0.5 );
+    } else
+    {
+        volt.lat = radarParams.latitude;
+        volt.lon = radarParams.longitude;
+        volt.height = (int16_t)( radarParams.altitude * 1000 + 0.5 );
+    }
+    Swap::swap(volt.lat);
+    Swap::swap(volt.lon);
+    Swap::swap(volt.height);
+    volt.feedhorn_height = 0;
+    Swap::swap(volt.feedhorn_height);
+    volt.calib_const = radarParams.radarConstant;
+    Swap::swap(volt.calib_const);
+    volt.horiz_shv_tx_power = pow(10.0, (radarParams.measXmitPowerDbmH / 10.0) );
+    Swap::swap(volt.horiz_shv_tx_power);
+    volt.vert_shv_tx_power = pow(10.0, (radarParams.measXmitPowerDbmV / 10.0) );
+    Swap::swap(volt.vert_shv_tx_power);
+    //
+    // TODO Are there any applicable TITAN parameters for these
+    //
+    volt.sys_diff_refl = 0;
+    Swap::swap(volt.sys_diff_refl);
+    volt.sys_diff_phase = 0;
+    Swap::swap(volt.sys_diff_phase);
+    if( _params.override_vcp )
+    {
+        volt.vcp_num = _params.vcp;
+    } else
+    {
+        volt.vcp_num = radarParams.scanType;
+    }
+    Swap::swap(volt.vcp_num);
+    volt.spare = 0;
+    Swap::swap(volt.spare);
+    memcpy( (unsigned char *)type31_message + blkoffsets[0] + sizeof(NEXRAD_ctm_info) + sizeof(RDA_RPG_message_header_t), &volt, sizeof(volt) );
+
+    //
+    // Generic_elev_t
+    //
+    Generic_elev_t elevt;
+    elevt.type[0] = 'R';
+    elevt.type[1] = 'E';
+    elevt.type[2] = 'L';
+    elevt.type[3] = 'V';
+    elevt.len = (uint16_t)sizeof(Generic_elev_t);
+    Swap::swap(elevt.len);
+    elevt.atmos = -12;
+    Swap::swap(elevt.atmos);
+    elevt.calib_const = radarParams.radarConstant;
+    Swap::swap(elevt.calib_const);
+    memcpy( (unsigned char *)type31_message + blkoffsets[1] + sizeof(NEXRAD_ctm_info) + sizeof(RDA_RPG_message_header_t), &elevt, sizeof(elevt) );
+
+    //
+    // Generic_rad_t
+    //
+    Generic_rad_t radt;
+    radt.type[0] = 'R';
+    radt.type[1] = 'R';
+    radt.type[2] = 'A';
+    radt.type[3] = 'D';
+    radt.len = (uint16_t)sizeof(Generic_rad_t);
+    Swap::swap(radt.len);
+    radt.unamb_range = (uint16_t)( ( radarParams.unambigRange * 10 ) + 0.5 );
+    Swap::swap(radt.unamb_range);
+    radt.horiz_noise = -255.0;
+    Swap::swap(radt.horiz_noise);
+    radt.vert_noise = -255.0;
+    Swap::swap(radt.vert_noise);
+    radt.nyquist_vel = (uint16_t)( ( radarParams.unambigVelocity * 100 ) + 0.5 );
+    Swap::swap(radt.nyquist_vel);
+    radt.spare = 0;
+    Swap::swap(radt.spare);
+    memcpy( (unsigned char *)type31_message + blkoffsets[2] + sizeof(NEXRAD_ctm_info) + sizeof(RDA_RPG_message_header_t), &radt, sizeof(radt) );
+
+    //
+    // Moment data
+    //
+    // DBZ, VEL, WIDTH, ZDR, RHOHV, PHIDP
+    std::map< std::string, mom_conversion >::const_iterator itmomconv;
+    Generic_moment_t *generic_moment_ptr;
+    Generic_moment_t *p;
+    unsigned char * gates_8;
+    uint16_t * gates_16;
+    float val = 0;
+    uint32_t mom_msgsize = 0;
+    
+    for (size_t fieldNum = 0; fieldNum < fieldParams.size(); fieldNum++)
+    {
+        //
+        // Set the moment block size based on the number of gates and the byte width
+        //
+        mom_msgsize = sizeof(Generic_moment_t);
+        //
+        // Check if the moment type is PHI...then the byte width is 16...otherwise
+        // we set it to 8 bits
+        //
+        if( fieldParams[fieldNum]->name.find("PHIDP") != string::npos ||
+            fieldParams[fieldNum]->name.find("PHI") != string::npos ||
+            fieldParams[fieldNum]->name.find("PH") != string::npos )
+        {
+            type31ByteWidth = 2;
+        } else
+        {
+            type31ByteWidth = 1;
+        }
+        mom_msgsize += type31ByteWidth * radarParams.numGates;
+        generic_moment_ptr = (Generic_moment_t*)malloc(mom_msgsize);
+        
+        if( fieldParams[fieldNum]->name.find("DBZ") != string::npos ||
+            fieldParams[fieldNum]->name.find("REF") != string::npos ||
+            fieldParams[fieldNum]->name.find("DBZHC") != string::npos ||
+            fieldParams[fieldNum]->name.find("ZH") != string::npos ||
+            fieldParams[fieldNum]->name.find("Z_HH") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DREF").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DREF");
+        } else if( fieldParams[fieldNum]->name.find("VEL") != string::npos ||
+                   fieldParams[fieldNum]->name.find("VR") != string::npos ||
+                   fieldParams[fieldNum]->name.find("VELHC") != string::npos ||
+                   fieldParams[fieldNum]->name.find("V") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DVEL").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DVEL");
+        } else if( fieldParams[fieldNum]->name.find("WIDTH") != string::npos ||
+                   fieldParams[fieldNum]->name.find("SW") != string::npos ||
+                   fieldParams[fieldNum]->name.find("SPW") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DSW ").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DSW ");
+        } else if( fieldParams[fieldNum]->name.find("ZDR") != string::npos ||
+                   fieldParams[fieldNum]->name.find("ZD") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DZDR").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DZDR");
+        } else if( fieldParams[fieldNum]->name.find("RHOHV") != string::npos ||
+                   fieldParams[fieldNum]->name.find("RHO") != string::npos   ||
+                   fieldParams[fieldNum]->name.find("RH") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DRHO").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DRHO");
+        } else if( fieldParams[fieldNum]->name.find("PHIDP") != string::npos ||
+                   fieldParams[fieldNum]->name.find("PHI") != string::npos ||
+                   fieldParams[fieldNum]->name.find("PH") != string::npos )
+        {
+            strncpy(generic_moment_ptr->name, string("DPHI").c_str(), 4 );
+            itmomconv = _momCharacteristics.find("DPHI");
+        }
+        
+        //
+        // If a matching field was not found, then set everything to zero and default to a
+        // reflectivity field
+        //
+        if( itmomconv == _momCharacteristics.end() )
+        {
+            cerr << "Warning: No matching message type 31 output field for input field: ";
+            cerr << fieldParams[fieldNum]->name.c_str() << endl;
+            itmomconv = _momCharacteristics.begin();
+            strncpy(generic_moment_ptr->name, string("DREF").c_str(), 4 );
+        }
+
+        generic_moment_ptr->info = 0;
+        Swap::swap(generic_moment_ptr->info);
+        generic_moment_ptr->no_of_gates = radarParams.numGates;
+        Swap::swap(generic_moment_ptr->no_of_gates);
+        generic_moment_ptr->first_gate_range = (int16_t)(radarParams.startRange * 1000.0 + 0.5);
+        Swap::swap(generic_moment_ptr->first_gate_range);
+        generic_moment_ptr->bin_size = (int16_t)(radarParams.gateSpacing * 1000.0 + 0.5);
+        Swap::swap(generic_moment_ptr->bin_size);
+        //
+        // These two parameters are hard-coded but should be revisited
+        //
+        generic_moment_ptr->tover = 50;
+        Swap::swap(generic_moment_ptr->tover);
+        generic_moment_ptr->SNR_threshold = 28;
+        Swap::swap(generic_moment_ptr->SNR_threshold);
+
+        //
+        // set the control flag and word size
+        //
+        generic_moment_ptr->control_flag = 0;
+        generic_moment_ptr->data_word_size =  type31ByteWidth * 8;
+
+        //
+        // Set the data scale and offset
+        //
+        generic_moment_ptr->scale = itmomconv->second.scale;
+        Swap::swap(generic_moment_ptr->scale);
+        generic_moment_ptr->offset = itmomconv->second.offset;
+        Swap::swap(generic_moment_ptr->offset);
+
+
+        //
+        // Allocate the data
+        //
+        size_t dsr_index = 0;
+        if( type31ByteWidth == 1 )
+        {
+            gates_8 = (unsigned char *)malloc( type31ByteWidth * radarParams.numGates );
+            memset( gates_8, 0, type31ByteWidth * radarParams.numGates );
+
+            //
+            // Set the data
+            //
+            p = generic_moment_ptr + 1;
+            for( int i = 0; i < radarParams.numGates; ++i )
+            {
+                dsr_index = (i * radarParams.numFields) + fieldNum;
+                if( fieldParams[fieldNum]->byteWidth == 1 )
+                {
+                    unsigned char ival = *((unsigned char *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = (ival * fieldParams[fieldNum]->scale + fieldParams[fieldNum]->bias);
+                        gates_8[i] = (unsigned char)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_8[i] < itmomconv->second.dataMin )
+                        {
+                            gates_8[i] = itmomconv->second.dataMin;
+                        } else if( gates_8[i] > itmomconv->second.dataMax )
+                        {
+                            gates_8[i] = itmomconv->second.dataMax;
+                        }
+                    }
+                } else if( fieldParams[fieldNum]->byteWidth == 2 )
+                {
+                    uint16_t ival = *((uint16_t *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = (ival * fieldParams[fieldNum]->scale + fieldParams[fieldNum]->bias);
+                        gates_8[i] = (unsigned char)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_8[i] < itmomconv->second.dataMin )
+                        {
+                            gates_8[i] = itmomconv->second.dataMin;
+                        } else if( gates_8[i] > itmomconv->second.dataMax )
+                        {
+                            gates_8[i] = itmomconv->second.dataMax;
+                        }
+                    }
+                } else if( fieldParams[fieldNum]->byteWidth == 4 )
+                {
+                    float ival = *((float *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = ival;
+                        gates_8[i] = (unsigned char)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_8[i] < itmomconv->second.dataMin )
+                        {
+                            gates_8[i] = itmomconv->second.dataMin;
+                        } else if( gates_8[i] > itmomconv->second.dataMax )
+                        {
+                            gates_8[i] = itmomconv->second.dataMax;
+                        }
+                    }
+                }
+            }
+            memcpy( (unsigned char *)p, gates_8, type31ByteWidth * radarParams.numGates );
+            
+            free(gates_8);
+        } else
+        {
+            gates_16 = (uint16_t *)malloc( type31ByteWidth * radarParams.numGates );
+            memset( gates_16, 0, type31ByteWidth * radarParams.numGates );
+            
+            //
+            // Set the data
+            //
+            p = generic_moment_ptr + 1;
+            for( int i = 0; i < radarParams.numGates; ++i )
+            {
+                dsr_index = (i * radarParams.numFields) + fieldNum;
+                if( fieldParams[fieldNum]->byteWidth == 1 )
+                {
+                    unsigned char ival = *((unsigned char *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = (ival * fieldParams[fieldNum]->scale + fieldParams[fieldNum]->bias);
+                        gates_16[i] = (uint16_t)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_16[i] < itmomconv->second.dataMin )
+                        {
+                            gates_16[i] = itmomconv->second.dataMin;
+                        } else if( gates_16[i] > itmomconv->second.dataMax )
+                        {
+                            gates_16[i] = itmomconv->second.dataMax;
+                        }
+                        Swap::swap(gates_16[i]);
+                    }
+                } else if( fieldParams[fieldNum]->byteWidth == 2 )
+                {
+                    uint16_t ival = *((uint16_t *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = (ival * fieldParams[fieldNum]->scale + fieldParams[fieldNum]->bias);
+                        gates_16[i] = (uint16_t)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_16[i] < itmomconv->second.dataMin )
+                        {
+                            gates_16[i] = itmomconv->second.dataMin;
+                        } else if( gates_16[i] > itmomconv->second.dataMax )
+                        {
+                            gates_16[i] = itmomconv->second.dataMax;
+                        }
+                        Swap::swap(gates_16[i]);
+                    }
+                } else if( fieldParams[fieldNum]->byteWidth == 4 )
+                {
+                    float ival = *((float *)beam.data() + dsr_index);
+                    if( ival != fieldParams[fieldNum]->missingDataValue )
+                    {
+                        val = ival;
+                        gates_16[i] = (uint16_t)(itmomconv->second.scale * val + itmomconv->second.offset);
+                        if( gates_16[i] < itmomconv->second.dataMin )
+                        {
+                            gates_16[i] = itmomconv->second.dataMin;
+                        } else if( gates_16[i] > itmomconv->second.dataMax )
+                        {
+                            gates_16[i] = itmomconv->second.dataMax;
+                        }
+                        Swap::swap(gates_16[i]);
+                    }
+                }
+            }
+            
+            memcpy( (unsigned char *)p, gates_16, type31ByteWidth * radarParams.numGates );
+            
+            free(gates_16);
+
+        }
+        p = generic_moment_ptr;
+        memcpy( (unsigned char *)type31_message + blkoffsets[3 + fieldNum] + sizeof(NEXRAD_ctm_info) + sizeof(RDA_RPG_message_header_t), p,
+                sizeof(Generic_moment_t) + type31ByteWidth * radarParams.numGates );
+        
+        //
+        // Clean up memory
+        //
+        free(generic_moment_ptr);
+    }
+
+    //
+    // Add the radial to the vector
+    //
+    _radials.push_back( make_pair( type31_message, msgsize ) );
+    if( _radials.size() >= (uint32_t)_params.radial_collection_size )
+    {
+        _output_radials = true;
+    }
+}
+
+void DsrWebPost::_adjustRadialStatus( const unsigned char& status )
+{
+    if( _radials.size() > 0 )
+    {
+        _radials[_radials.size() - 1].first->basedata.base.status = status;
+    }
+}
+
+
+////////////////////////////////////////////////////////////////////
+// open output file, for a given time
+//
+// returns 0 on success, -1 on failure
+
+int DsrWebPost::_startNewVolume( const time_t& filetime, const string &radarid ) 
+{
+
+    DateTime startTime(filetime);
+    int destLen = -1;
+    unsigned char *dest;
+    
+    //
+    // Reset the message number
+    //
+    _message_num = 1;
+    
+    //
+    // Allocate the buffer memory
+    //
+    unsigned char * fbuf;
+    fbuf = (unsigned char *)malloc( sizeof( meta_data_block ) );
+    if( fbuf == NULL )
+    {
+        fprintf(stderr, "malloc failed - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+        return -1;
+    }
+    NEXRAD_vol_title fh;
+    strncpy( fh.filename, "AR2V0006.", 9 );
+    strncpy( fh.extension, "001", 3 );
+    // Collection date & time
+    fh.julian_date = (uint32_t)( filetime / 86400 ) + 1;
+    Swap::swap(fh.julian_date);
+    float temp = (float)filetime / 86400.0;
+    float temp2 = floor(((float)filetime / 86400.0));
+    uint32_t temp3 = (uint32_t)(( temp - temp2 ) * 86400.0);
+    fh.millisecs_past_midnight = temp3 * 1000;
+    Swap::swap(fh.millisecs_past_midnight);
+    radarid.copy( (char *)&fh.filler1, 4, 0 );
+    memcpy( fbuf, &meta_data_block[0], sizeof( meta_data_block ) );
+    
+    unsigned int control_word;
+    destLen = _bz2CompressHeader( &dest, fbuf, sizeof( meta_data_block ) );
+    free( fbuf );
+        
+        
+    //
+    // compute path name
+    //
+    char buf[MAX_PATH_LEN];
+        
+
+    //
+    // Volume date time
+    //
+    sprintf(buf,"%04d-%02d-%02dT%02d:%02d:%02d",
+            startTime.getYear(), startTime.getMonth(),
+            startTime.getDay(), startTime.getHour(), startTime.getMin(), startTime.getSec() );
+    _volDateTimeStr = buf;
+        
+    sprintf(buf,"%s%s%.4d%.2d%.2d%s%s%.4d%.2d%.2d.%.2d%.2d%.2d.%s",
+        _params.output_raw_dir, PATH_DELIM,startTime.getYear(), startTime.getMonth(),
+        startTime.getDay(), PATH_DELIM, _params.output_raw_prefix,
+        startTime.getYear(), startTime.getMonth(), startTime.getDay(),
+        startTime.getHour(), startTime.getMin(), startTime.getSec(),
+        _params.output_raw_ext);
+    _outFilePath = buf;
+    
+    if( _params.output_raw_data )
+    {
+        // 
+        // make output dir
+        //
+        
+        if (ta_makedir_recurse(_params.output_raw_dir))
+        {
+            int errNum = errno;
+            cerr << "ERROR - DsrWebPost" << endl;
+            cerr << "  Cannot make output dir: " << _params.output_raw_dir << endl;
+            cerr << "  " << strerror(errNum) << endl;
+            free( dest );
+            return -1;
+        }
+        
+        //
+        // make output dir
+        //
+        sprintf(buf,"%s%s%.4d%.2d%.2d",_params.output_raw_dir, PATH_DELIM,startTime.getYear(),
+                                        startTime.getMonth(), startTime.getDay() );
+        if( ta_makedir_recurse( buf ) )
+        {
+            int errNum = errno;
+            cerr << "ERROR - Dsr2UF" << endl;
+            cerr << "  Cannot make output dir: " << buf << endl;
+            cerr << "  " << strerror(errNum) << endl;
+            free( dest );
+            return -1;
+        }
+    
+        //
+        // Check to see if there is already a file opened with this name
+        //
+        struct stat ssbuf;
+        if( stat(_outFilePath.c_str(), &ssbuf) == -1)
+        {
+            ofstream out(_outFilePath.c_str(), ios::out | ios::binary ); 
+            if ( out.fail() )
+            {
+                fprintf(stderr, "ERROR - %s:DsrWebPost::_openOutputFile\n", _progName.c_str());
+                fprintf(stderr, "Could not open output file '%s'\n",_outFilePath.c_str());
+                free( dest );
+                return -1;
+            }
+            if(_params.debug >= Params::DEBUG_NORM)
+            {
+                cerr << "Created new file: \"" << _outFilePath.c_str() << "\"" << endl;
+            }
+            
+            //
+            // Write out the NEXRAD_vol_title
+            //
+            //
+            if( destLen > -1 )
+            {
+                out.write( (const char *)&fh, sizeof(fh) );
+                control_word = destLen;
+                Swap::swap( control_word );
+                out.write( (const char *)&control_word, sizeof(control_word) );
+                out.write( (const char *)dest, destLen );
+                if( !out.good() )
+                {
+                    fprintf(stderr, "ERROR - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                    fprintf(stderr, "Could not write to output file '%s'\n",_outFilePath.c_str());
+                    free( dest );
+                    return -1;
+                }
+                out.close();
+            } else
+            {
+                fprintf(stderr, "ERROR - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                fprintf(stderr, "Could not bzip2 compress the volume header and metadata '%s'\n",_outFilePath.c_str());
+            }
+        } else
+        {
+            if(_params.debug >= Params::DEBUG_NORM)
+            {
+                cerr << "File already exists: \"" << _outFilePath.c_str() << "\"" << endl;
+            }
+        }
+    }
+    
+    if( _params.post_data_web )
+    {
+        //
+        // Post via http
+        //
+        if( _params.debug >= Params::DEBUG_NORM )
+        {
+            cerr << "Posting new volume to URL: " << _params.post_data_url << endl;
+        }
+        //
+        // Split the URL
+        //
+        string full_url = string(_params.post_data_url);
+        size_t pos1 = full_url.find_first_of("//");
+        size_t pos2 = full_url.find_first_of("/", pos1 + 2 );
+        string address;
+        string application;
+        stringstream ss;
+        char partbuf[4];
+        if( pos1 != string::npos && pos2 != string::npos )
+        {
+            address = full_url.substr( pos1 + 2, pos2 - pos1 - 2 );
+            application = full_url.substr( pos2 );
+
+            int sock = _openSocket( address, 80 );
+            if( sock )
+            {
+                //
+                // Base64 encode the radial data
+                //
+                control_word = destLen;
+                Swap::swap( control_word );
+                //
+                // Add the control word to the data
+                //
+                //out.write( (const char *)&fh, sizeof(fh) );
+                unsigned char * fullmsg = (unsigned char *)malloc( sizeof( fh ) + sizeof(control_word) + destLen );
+                if( fullmsg != NULL )
+                {
+                    memcpy( fullmsg, (unsigned char *)&fh, sizeof( fh ) );
+                    memcpy( fullmsg + sizeof( fh ), (unsigned char *)&control_word, sizeof(control_word));
+                    memcpy( fullmsg + sizeof( fh ) + sizeof(control_word), dest, destLen );
+                    string strb64 = _base64_encode( fullmsg, sizeof( fh ) + sizeof(control_word) + destLen );
+                    if( strb64.size() > 0 )
+                    {
+                        string strtmp = "{\"radial\":\"";
+                        strtmp += strb64;
+                        strtmp += "\",\"messageNumber\":\"";
+                        sprintf( partbuf, "%0d", _message_num );
+                        strtmp += partbuf;
+                        strtmp += "\",\"dateTime\":\"";
+                        strtmp += _volDateTimeStr;
+                        strtmp += "\",\"radarID\":\"";
+                        strtmp += radarid;
+                        strtmp += "\"}";
+                        _buildHttpHeader( ss, application, strtmp, address );
+                        //
+                        // Report some data
+                        //
+                        char resp[5000];
+                        for( int i = 0; i < 5000; ++i ) resp[i] = '\0';
+                        if (_params.debug >= Params::DEBUG_VERBOSE)
+                        {
+                            cerr << ss.str() << endl;
+                        }
+                        if( SKU_write_select( sock, 1000 ) < 0 )
+                        {
+                            fprintf(stderr, "Error returned from write select - %s:DsrWebPost::_postRadials\n", _progName.c_str());
+                            SKU_close( sock );
+                            free( fullmsg );
+                            return -1;
+                        }
+                        int buffer_size = ss.str().size();
+                        int bytes_written;
+                        if(_params.debug >= Params::DEBUG_NORM)
+                        {
+                            cerr << "Attempting to write " << buffer_size << " bytes to the socket." << endl;
+                        }
+                        if( ( bytes_written = SKU_write( sock, ss.str().c_str(), buffer_size, -1 ) ) != buffer_size )
+                        {
+                            fprintf(stderr, "Error returned from socket write. bytes_written: %d\n", bytes_written);
+                            SKU_close( sock );
+                            free( fullmsg );
+                            return -1;
+                        }
+                        //
+                        // Try to read the response
+                        //
+                        long bytes_read = SKU_read_timed( sock, &resp[0], 5000, 4, 500 );
+                        if( bytes_read > 0 )
+                        {
+                            if(_params.debug >= Params::DEBUG_NORM)
+                            {
+                                cerr << "Response from web server: " << resp << endl;
+                                if( string(resp).find( "500 Internal Server Error" ) != string::npos )
+                                {
+                                    cerr << endl << "Original POST:" << endl;
+                                    cerr << ss.str() << endl;
+                                }
+                            }
+                        } else
+                        {
+                            if(_params.debug >= Params::DEBUG_NORM)
+                            {
+                                cerr << "No response from the web server!" << endl;
+                            }
+                        }
+                        SKU_close( sock );
+                        //
+                        // Sleep for a few seconds
+                        //
+                        //sleep(2);
+                    }
+                    free( fullmsg );
+                }
+            } else
+            {
+                cerr << "Error opening a socket to address: \"" << address << "\" application: \"";
+                cerr << application << "\"" << endl;
+                free( dest );
+                return -1;
+            }
+        } else
+        {
+            cerr << "Error in URL: \"" << full_url << "\"" << endl;
+        }
+    }
+    
+    //
+    // Free the memory if necessary
+    //
+    if( destLen > -1 )
+    {
+        free( dest );
+    }
+    
+    ++_message_num;
+        
+    return 0;
+}
+
+void DsrWebPost::_postRadials()
+{
+    bool status = false;
+    //unsigned char * fbuf;
+    size_t total = 0;
+
+    if( _radials.size() > 0 )
+    {
+        unsigned char *dest = NULL;
+        int destLen = -1;
+        
+        if( _outFilePath == "" || _volDateTimeStr == "" )
+        {
+            time_t epoch;
+            uint16_t val = _radials[0].first->basedata.base.date;
+            Swap::swap(val);
+            epoch = ( val - 1 ) * 86400;
+            uint32_t tm = _radials[0].first->basedata.base.time;
+            Swap::swap(tm);
+            epoch += tm / 1000;
+            char id[5];
+           // memcpy( &id[0], _radials[0].first->basedata.base.radar_id, 4 );
+            id [0] ='K';
+            id [1]='D';
+            id [2]='B';
+            id [3]='X';
+            id[4] = '\0';
+            status = _startNewVolume( epoch, string(id) );
+        } else
+        {
+            status = true;
+        }
+        
+        //
+        // Compress the data
+        //
+        unsigned int control_word;
+        destLen = _bz2CompressRadials( &dest );
+   
+        if( _params.output_raw_data && status )
+        {
+            if ( _params.debug >= Params::DEBUG_NORM )
+            {
+                cerr << "Writing radials to file \"" << _outFilePath << "\"" << endl;
+            }
+    
+            ofstream out(_outFilePath.c_str(), ios::app | ios::out | ios::binary); 
+            if ( out.fail() )
+            {
+                fprintf(stderr, "ERROR - %s:DsrWebPost::_postRadials\n", _progName.c_str());
+                fprintf(stderr, "Could not open output file '%s'\n",_outFilePath.c_str());
+                _output_radials = false;
+                _freeRadialMemory();
+                return;
+            }
+            if( destLen > -1 )
+            {
+                control_word = destLen;
+                Swap::swap( control_word );
+                out.write( (const char *)&control_word, sizeof(control_word) );
+                out.write( (const char *)dest, (unsigned int)destLen);
+                if( !out.good() )
+                {
+                    fprintf(stderr, "ERROR - %s:DsrWebPost::_postRadials\n", _progName.c_str());
+                    fprintf(stderr, "Could not write to output file '%s'\n",_outFilePath.c_str());
+                    _output_radials = false;
+                    _freeRadialMemory();
+                    out.close();
+                    free( dest );
+                    return;
+                }
+                //free( dest );
+            } else
+            {
+                fprintf(stderr, "ERROR - %s:DsrWebPost::_postRadials\n", _progName.c_str());
+                fprintf(stderr, "_bz2CompressRadials returned -1\n");
+                _output_radials = false;
+                _freeRadialMemory();
+                out.close();
+                return;
+            }
+            total = 0;
+        }
+        
+        if( _params.post_data_web && status )
+        {
+            //
+            // Post via http
+            //
+            if( _params.debug >= Params::DEBUG_NORM )
+            {
+                cerr << "Posting radials to URL: " << _params.post_data_url << endl;
+            }
+            //
+            // Split the URL
+            //
+            string full_url = string(_params.post_data_url);
+            size_t pos1 = full_url.find_first_of("//");
+            size_t pos2 = full_url.find_first_of("/", pos1 + 2 );
+            string address;
+            string application;
+            stringstream ss;
+            char partbuf[4];
+            if( pos1 != string::npos && pos2 != string::npos )
+            {
+                address = full_url.substr( pos1 + 2, pos2 - pos1 - 2 );
+                application = full_url.substr( pos2 );
+    
+                int sock = _openSocket( address, 80 );
+                if( sock )
+                {
+                    //
+                    // Base64 encode the radial data
+                    //
+                    control_word = destLen;
+                    Swap::swap( control_word );
+                    //
+                    // Add the control word to the data
+                    //
+                    unsigned char * fullmsg = (unsigned char *)malloc( destLen + sizeof(control_word) );
+                    if( fullmsg != NULL )
+                    {
+                        memcpy( fullmsg, (unsigned char *)&control_word, sizeof(control_word));
+                        memcpy( fullmsg + sizeof(control_word), dest, destLen );
+                        string strb64 = _base64_encode( fullmsg, destLen + sizeof(control_word) );
+                        if( strb64.size() > 0 )
+                        {
+                            //string strb64(base64);
+                            string strtmp = "{\"radial\":\"";
+                            strtmp += strb64;
+                            strtmp += "\",\"messageNumber\":\"";
+                            sprintf( partbuf, "%0d", _message_num );
+                            strtmp += partbuf;
+                            strtmp += "\",\"dateTime\":\"";
+                            strtmp += _volDateTimeStr;
+                            char id[5];
+                      //      memcpy( &id[0], _radials[0].first->basedata.base.radar_id, 4 );
+                             id [0] ='K';
+                             id [1] ='D';
+                             id [2] ='B';
+                             id [3] ='X';
+                             id[4] = '\0';
+                            strtmp += "\",\"radarID\":\"";
+                            strtmp += id;
+                            strtmp += "\"}";
+                            _buildHttpHeader( ss, application, strtmp, address );
+                            //
+                            // Report some data
+                            //
+                            char resp[5000];
+                            for( int i = 0; i < 5000; ++i ) resp[i] = '\0';
+                            if (_params.debug >= Params::DEBUG_VERBOSE)
+                            {
+                                cerr << ss.str() << endl;
+                            }
+                            if(_params.debug >= Params::DEBUG_NORM)
+                            {
+                                cerr << "Writing radials to the web server." << endl;
+                            }
+                            if( SKU_write_select( sock, 2000 ) < 0 )
+                            {
+                                fprintf(stderr, "Error returned from write select - %s:DsrWebPost::_postRadials\n", _progName.c_str());
+                                SKU_close( sock );
+                                _output_radials = false;
+                                _freeRadialMemory();
+                                free( fullmsg );
+                                return;
+                            }
+                            int buffer_size = ss.str().size();
+                            int bytes_written;
+                            if(_params.debug >= Params::DEBUG_NORM)
+                            {
+                                cerr << "Attempting to write " << buffer_size << " bytes to the socket." << endl;
+                            }
+                            if( ( bytes_written = SKU_write( sock, ss.str().c_str(), buffer_size, -1 ) ) != buffer_size )
+                            {
+                                fprintf(stderr, "Error returned from socket write. bytes_written: %d\n", bytes_written);
+                                SKU_close( sock );
+                                _output_radials = false;
+                                _freeRadialMemory();
+                                free( fullmsg );
+                                return;
+                            }
+                            //
+                            // Try to read the response
+                            //
+                            long bytes_read = SKU_read_timed( sock, &resp[0], 5000, 4, 500 );
+                            if( bytes_read > 0 )
+                            {
+                                if(_params.debug >= Params::DEBUG_NORM)
+                                {
+                                    cerr << "Response from web server: " << resp << endl;
+                                    if( string(resp).find( "500 Internal Server Error" ) != string::npos )
+                                    {
+                                        cerr << endl << "Original POST:" << endl;
+                                        cerr << ss.str() << endl;
+                                    }
+                                }
+                            } else
+                            {
+                                if(_params.debug >= Params::DEBUG_NORM)
+                                {
+                                    cerr << "No response from the web server!" << endl;
+                                }
+                            }
+                            SKU_close( sock );
+                            //
+                            // Sleep for a few seconds
+                            //
+                            //sleep(2);
+                        }
+                        free( fullmsg );
+                    }
+                } else
+                {
+                    cerr << "Error opening a socket to address: \"" << address << "\" application: \"";
+                    cerr << application << "\"" << endl;
+                    _output_radials = false;
+                    _freeRadialMemory();
+                    free( dest );
+                    return;
+                }
+            } else
+            {
+                cerr << "Error in URL: \"" << full_url << "\"" << endl;
+            }
+        }
+
+            
+        //
+        // We are done with the post
+        //
+        
+        if( destLen > -1 )
+        {
+            free( dest );
+        }
+
+        _output_radials = false;
+        
+        _freeRadialMemory();
+
+        ++_message_num;
+    }
+}
+
+void DsrWebPost::_freeRadialMemory()
+{
+    //
+    // Clean up the memory
+    //
+    for(vector< pair< Type31_Radar_message*,uint32_t > >::const_iterator it = _radials.begin(); it != _radials.end(); ++it)
+    {
+        free( it->first );
+    }
+    _radials.clear();
+}
+
+void DsrWebPost::_buildHttpHeader(stringstream &hdr, const string& application, const string& payload, const string& server)
+{
+    hdr << "POST " << application << " HTTP/1.1\r\n";
+    hdr << "Host: " << server << "\r\n";
+    hdr << "Content-Length: " << payload.size() << "\r\n";
+    hdr << "Content-Type: application/json\r\n";
+    hdr << "\r\n";
+    hdr << payload << "\r\n";
+}
+
+int DsrWebPost::_openSocket(const string &host_name, const int port_number)
+{
+    if( _params.debug >= Params::DEBUG_NORM )
+    {
+      cerr << "Opening socket on host: \"" << host_name << "\" port: " << port_number << endl;
+    }
+  
+    // Open the client socket
+
+    int sock_fd = SKU_open_client_timed(host_name.c_str(), port_number, 5000);
+  
+    if (sock_fd < 0)
+    {
+        switch (sock_fd)
+        {
+            case -1 :
+                fprintf(stderr, "Error getting the remote host information for host: %s", host_name.c_str() );
+            break;
+            
+            case -2 :
+                fprintf(stderr, "Error getting a file descriptor for the connection to the remote port: %s::%d\n"
+                "Could the maximum number of file descriptors have been exceeded??",
+                host_name.c_str(), port_number);
+            break;
+            
+            case -3 :
+                fprintf(stderr, "Error connecting local socket to remote port: %s::%d",
+                host_name.c_str(), port_number);
+            break;
+            
+            case -4 :
+                fprintf(stderr, "Timed out trying to connect to socket: %s::%d",
+                host_name.c_str(), port_number);
+            break;
+            
+            default:
+                fprintf(stderr, "Unknown error connecting socket: %s::%d",
+                host_name.c_str(), port_number);
+            break;
+        }
+        
+        return -1;
+    }
+  
+    // Increase the socket buffer size
+    
+    int bufsize = 81920;
+    setsockopt(sock_fd, SOL_SOCKET, SO_SNDBUF, &bufsize, sizeof(bufsize));
+    
+    // Make the socket non-blocking
+    
+    int val;
+    
+    if ((val = fcntl(sock_fd, F_GETFL, 0)) < 0)
+    {
+        cerr << "Error getting current control flags for socket" << endl;
+    }
+    
+    val |= O_NONBLOCK;
+    
+    if (fcntl(sock_fd, F_SETFL, val) < 0)
+    {
+        cerr << "Error setting non-blocking control flag for socket" << endl;
+    }
+    
+    return sock_fd;
+}
+
+int DsrWebPost::_bz2CompressRadials( unsigned char **buffer )
+{
+    size_t total = 0;
+    unsigned char * fbuf;
+
+    if( _radials.size() > 0 )
+    {
+        for(vector< pair< Type31_Radar_message*,uint32_t > >::const_iterator it = _radials.begin(); it != _radials.end(); ++it)
+        {
+            if( total == 0 )
+            {
+                fbuf = (unsigned char *)malloc( it->second );
+            } else
+            {
+                fbuf = (unsigned char *)realloc( fbuf, ( total + it->second ) );
+            }
+            if( fbuf == NULL )
+            {
+                fprintf(stderr, "realloc failed - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                return -1;
+            }
+            memcpy( (fbuf + total), (unsigned char *)it->first, it->second);
+            total += it->second;
+        }
+        //
+        // Compression
+        //
+        int sizeFactor = 1;
+        int compression_error = 0;
+        unsigned int destLen;
+        unsigned int sourceLen;
+        
+        do
+        {
+            destLen = total * sizeFactor;
+            sourceLen = total;
+            *buffer = (unsigned char *)malloc( destLen );
+            if( *buffer == NULL )
+            {
+                fprintf(stderr, "malloc failed in BZIP2 compression - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                free( fbuf );
+                return -1;
+            }
+    
+#ifdef BZ_CONFIG_ERROR
+            compression_error = BZ2_bzBuffToBuffCompress( (char*)*buffer, &destLen,
+                                                          (char*)fbuf,
+                                                          sourceLen,
+                                                          7, 0, 30 );
+#else
+            compression_error = bzBuffToBuffCompress( (char*)*buffer, &destLen,
+                                                      (char*)fbuf,
+                                                      sourceLen,
+                                                      7, 0, 30 );
+#endif
+            if( compression_error == BZ_OUTBUFF_FULL )
+            {
+                cerr << "ERROR: BZ_OUTBUFF_FULL---------------------------" << destLen << endl;
+                free( *buffer );
+                sizeFactor *= 2;
+                if( sizeFactor > 4097 )
+                {
+                    fprintf(stderr, "BZIP2 compression failed - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                    free( fbuf );
+                    return -1; 
+                }
+            }
+        } while (compression_error == BZ_OUTBUFF_FULL);
+
+        //
+        // return the compressed data
+        //
+        free( fbuf );
+        return destLen;
+
+        if(_params.debug >= Params::DEBUG_NORM)
+        {
+            cerr << "BZIP2 Compression of header block - original size: " << sourceLen << " compressed size: " << destLen << endl;
+        }
+    } else
+    {
+        return -1;
+    }
+}
+
+int DsrWebPost::_bz2CompressHeader( unsigned char **buffer, unsigned char *source, unsigned int sourceLen )
+{
+    //
+    // Compression
+    //
+    int sizeFactor = 1;
+    int compression_error = 0;
+    unsigned int destLen;
+
+    if( source != NULL && sourceLen > 0 )
+    {
+        do
+        {
+            destLen = sourceLen * sizeFactor;
+            *buffer = (unsigned char *)malloc( destLen );
+            if( *buffer == NULL )
+            {
+                fprintf(stderr, "malloc failed in BZIP2 compression - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                return -1;
+            }
+        
+#ifdef BZ_CONFIG_ERROR
+            compression_error = BZ2_bzBuffToBuffCompress( (char*)*buffer, &destLen,
+                                                        (char*)source,
+                                                        sourceLen,
+                                                        7, 0, 30 );
+#else
+            compression_error = bzBuffToBuffCompress( (char*)*buffer, &destLen,
+                                                    (char*)source,
+                                                    sourceLen,
+                                                    7, 0, 30 );
+#endif
+            if( compression_error == BZ_OUTBUFF_FULL )
+            {
+                cerr << "ERROR: BZ_OUTBUFF_FULL---------------------------" << destLen << endl;
+                free( *buffer );
+                sizeFactor *= 2;
+                if( sizeFactor > 4097 )
+                {
+                    fprintf(stderr, "BZIP2 compression failed - %s:DsrWebPost::_startNewVolume\n", _progName.c_str());
+                    return -1; 
+                }
+            }
+        } while (compression_error == BZ_OUTBUFF_FULL);
+
+        //
+        // return the compressed data
+        //
+        return destLen;
+    
+        if(_params.debug >= Params::DEBUG_NORM)
+        {
+            cerr << "BZIP2 Compression of header block - original size: " << sourceLen << " compressed size: " << destLen << endl;
+        }
+    } else
+    {
+        return -1;
+    }
+}
+
+string DsrWebPost::_base64_encode(unsigned char const* bytes_to_encode, unsigned int in_len) {
+  string ret;
+  int i = 0;
+  int j = 0;
+  unsigned char char_array_3[3];
+  unsigned char char_array_4[4];
+  const string base64_chars("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/");
+
+  while (in_len--) {
+    char_array_3[i++] = *(bytes_to_encode++);
+    if (i == 3) {
+      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+      char_array_4[3] = char_array_3[2] & 0x3f;
+
+      for(i = 0; (i <4) ; i++)
+        ret += base64_chars[char_array_4[i]];
+      i = 0;
+    }
+  }
+
+  if (i)
+  {
+    for(j = i; j < 3; j++)
+      char_array_3[j] = '\0';
+
+    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+    char_array_4[3] = char_array_3[2] & 0x3f;
+
+    for (j = 0; (j < i + 1); j++)
+      ret += base64_chars[char_array_4[j]];
+
+    while((i++ < 3))
+      ret += '=';
+
+  }
+
+  return ret;
+
+}

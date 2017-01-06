@@ -1,0 +1,64 @@
+###############################################
+#
+# makefile template for automake
+#
+# app name: DsrWebPost
+#
+# written by script createMakefile.am.app.py
+#
+# created 2014-05-03 16:02:53.144144
+#
+###############################################
+
+# compile flags - includes
+
+AM_CFLAGS = -I.
+AM_CFLAGS += -I../../../../libs/Fmq/src/include
+AM_CFLAGS += -I../../../../libs/dsserver/src/include
+AM_CFLAGS += -I../../../../libs/rapformats/src/include
+AM_CFLAGS += -I../../../../libs/rapmath/src/include
+AM_CFLAGS += -I../../../../libs/didss/src/include
+AM_CFLAGS += -I../../../../libs/toolsa/src/include
+AM_CFLAGS += -I../../../../libs/dataport/src/include
+AM_CFLAGS += -I../../../../libs/tdrp/src/include
+
+AM_CXXFLAGS = $(AM_CFLAGS)
+
+# load flags
+
+AM_LDFLAGS = -L.
+AM_CFLAGS += -L../../../../libs/Fmq/src
+AM_CFLAGS += -L../../../../libs/dsserver/src
+AM_CFLAGS += -L../../../../libs/rapformats/src
+AM_CFLAGS += -L../../../../libs/rapmath/src
+AM_CFLAGS += -L../../../../libs/didss/src
+AM_CFLAGS += -L../../../../libs/toolsa/src
+AM_CFLAGS += -L../../../../libs/dataport/src
+AM_CFLAGS += -L../../../../libs/tdrp/src
+
+# load libs
+
+LDADD = -lFmq
+LDADD += -ldsserver
+LDADD += -lrapformats
+LDADD += -lrapmath
+LDADD += -ldidss
+LDADD += -ltoolsa
+LDADD += -ldataport
+LDADD += -ltdrp
+LDADD += -lpthread
+LDADD += -lbz2
+
+# set app name
+
+bin_PROGRAMS = DsrWebPost
+
+# source files
+
+DsrWebPost_SOURCES = \
+	Params.cc \
+	Args.cc \
+	Main.cc \
+	Swap.cpp \
+	DsrWebPost.cc
+
