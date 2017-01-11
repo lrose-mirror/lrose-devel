@@ -2,6 +2,6 @@
 
 # run example for RadxPartRain
 
-RadxPartRain -params ~/devel/params/RadxPartRain/RadxPartRain.ml.sur -debug -f /scr/hail2/rsfdata/pecan/cfradial/spol/moments/sband/sur/20150529/cfrad.20150529_000442.328_to_20150529_001129.414_SPOL_v1998_PunSur_SUR.nc
+RadxPartRain -params ~/devel/testing/RadxPartRain/RadxPartRain.ml.sur -debug -f /scr/hail2/rsfdata/pecan/cfradial/spol/moments/sband/sur/20150529/cfrad.20150529_000442.328_to_20150529_001129.414_SPOL_v1998_PunSur_SUR.nc
 
-RadxPartRain -params ~/devel/params/RadxPartRain/RadxPartRain.ml.rhi -debug -f /scr/hail2/rsfdata/pecan/cfradial/spol/moments/sband/rhi/20150529/cfrad.20150529_000136.020_to_20150529_000440.315_SPOL_v1997_PunRhi_RHI.nc
+RadxPartRain -params ~/devel/testing/RadxPartRain/RadxPartRain.ml.rhi -debug -f /scr/hail2/rsfdata/pecan/cfradial/spol/moments/sband/rhi/20150529/cfrad.20150529_000136.020_to_20150529_000440.315_SPOL_v1997_PunRhi_RHI.nc

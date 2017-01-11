@@ -1133,7 +1133,7 @@ zdr_attenuation_exponent = 0.84;
 // Type: string
 //
 
-pid_thresholds_file_path = "$(HOME)/git/lrose-devel/params/RadxPartRain/pid_thresholds.spol";
+pid_thresholds_file_path = "$(HOME)/git/lrose-devel/testing/RadxPartRain/pid_thresholds.spol";
 
 ///////////// PID_snr_threshold ///////////////////////
 //
