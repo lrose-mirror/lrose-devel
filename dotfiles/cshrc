@@ -332,7 +332,7 @@ if ($?prompt) then
   alias cvsgv 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@rafgv.dyndns.org'
 
 
-  alias cvshsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 dhsrl@hsrl.fl-guest.ucar.edu'
+  alias cvshsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl.fl-guest.ucar.edu'
   alias cvshsrl1 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl-archiver1.fl-guest.ucar.edu'
   alias cvshsrl2 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl-archiver2.fl-guest.ucar.edu'
 

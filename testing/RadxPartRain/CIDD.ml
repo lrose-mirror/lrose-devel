@@ -128,7 +128,12 @@ ZDR4PID ZDR4PID  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ZDR_
 RHOHV4PID RHOHV4PID  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&RHOHV_FOR_PID    rhohv.colors   dB  -5 80 5 radial 1 0
 SDZDR4PID SDZDR4PID  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&SDZDR_FOR_PID    sdzdr.colors   dB  -5 80 5 radial 1 0
 SDPHIDP4PID SDPHIDP4PID  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&SDPHIDP_FOR_PID    sdphidp.colors   dB  -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
+
 ML_INT ML_INT  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ML_INTEREST ml_interest.colors - -5 80 5 radial 1 0
+ML_FLAG ML_FLAG  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ML_INTEREST ml_flag.colors - -5 80 5 radial 1 0
+DBZ_CORR DBZ_CORR mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&DBZ_CORR  dbz.colors   dBZ -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 
 =========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 =========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
@@ -230,7 +235,8 @@ cidd.debug2_flag:           0
 #  System will startup using field 0, requesting data closest to the
 # demo time. The movie frame will be centered on the time after applying
 # temporal rounding. 
-cidd.demo_time:  00:05 05/29/2015
+#cidd.demo_time:  00:05 05/29/2015
+cidd.demo_time:  08:45 07/10/2015
 
 
 # Set times to the nearest value divisible by the number of seconds

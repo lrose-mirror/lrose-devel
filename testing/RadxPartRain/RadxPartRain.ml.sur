@@ -1320,18 +1320,75 @@ PID_ngates_for_sdev = 9;
 
 PID_output_particle_interest_fields = FALSE;
 
-///////////// PID_compute_melting_layer ///////////////
+///////////// PID_locate_melting_layer ////////////////
 //
-// Option to compute interest for melting layer.
+// Option to locate the melting layer.
 //
-// If true, the ML_INTEREST field will be computed. Otherwise it will be 
-//   missing.
+// If true, the melting layer will be located using the WET_SNOW 
+//   category. In addition, the ML_INTEREST field will be computed. 
+//   Otherwise it will be missing. Follows Giangrande et al. - Automatic 
+//   Designation of the Melting Layer with Polarimitric Prototype of 
+//   WSR-88D Radar - AMS JAMC, Vol47, 2008.
 //
 //
 // Type: boolean
 //
 
-PID_compute_melting_layer = TRUE;
+PID_locate_melting_layer = TRUE;
+
+///////////// melting_layer_percentile_for_bottom_limit 
+//
+// Percentile value for estimating the bottom of the melting layer.
+//
+// To locate the melting layer limits, we rank the heights of all gates 
+//   containing WET_SNOW, from bottom to top. This is the percentile value 
+//   for the bottom of the layer.
+//
+//
+// Type: double
+//
+
+melting_layer_percentile_for_bottom_limit = 25;
+
+///////////// melting_layer_percentile_for_top_limit //
+//
+// Percentile value for estimating the top of the melting layer.
+//
+// To locate the melting layer limits, we rank the heights of all gates 
+//   containing WET_SNOW, from bottom to top. This is the percentile value 
+//   for the top of the layer.
+//
+//
+// Type: double
+//
+
+melting_layer_percentile_for_top_limit = 75;
+
+///////////// melting_layer_write_results_to_spdb /////
+//
+// Option to save melting layer properties to spdb.
+//
+// If true, the melting layer properties will be saved to SPDB using XML 
+//   encoding. See 'melting_layer_spdb_output_url'.
+//
+//
+// Type: boolean
+//
+
+melting_layer_write_results_to_spdb = TRUE;
+
+///////////// melting_layer_spdb_output_url ///////////
+//
+// URL for writing melting layer results to SPDB XML.
+//
+// For local writes, specify the directory. For remote writes, specify 
+//   the full url: spdbp:://host::dir.
+//
+//
+// Type: string
+//
+
+melting_layer_spdb_output_url = "/tmp/spdb/melting_layer";
 
 //======================================================================
 //
