@@ -254,7 +254,7 @@ transition_nrays_margin = 0;
 // Type: boolean
 //
 
-trim_surveillance_sweeps_to_360deg = FALSE;
+trim_surveillance_sweeps_to_360deg = TRUE;
 
 ///////////// set_max_range ///////////////////////////
 //

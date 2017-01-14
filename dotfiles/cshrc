@@ -157,7 +157,12 @@ endif
 # --- PYTHON ---
 
 #setenv PYTHONPATH /usr/lib/python2.?/site-packages
-setenv PYTHONPATH ~/anaconda/pkgs
+setenv PYTHONPATH ~/anaconda2/pkgs
+
+# -------- HSRL --------
+
+setenv HSRL_CONFIG ~/hsrl_config
+setenv GRIB_CACHE /scr/eldora1/HSRL_data/GFS_cache
 
 # --- Path ---
 
@@ -180,7 +185,7 @@ endif
 
 set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt4/bin)
-set path = ($path ~/anaconda/bin)
+set path = ($path ~/anaconda2/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
