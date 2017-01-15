@@ -208,54 +208,6 @@ input_file_search_substr = "";
 
 aggregate_sweep_files_on_read = FALSE;
 
-///////////// remove_rays_with_antenna_transitions ////
-//
-// Option to remove rays taken while the antenna was in transition.
-//
-// If true, rays with the transition flag set will not be used. The 
-//   transiton flag is set when the antenna is in transtion between one 
-//   sweep and the next.
-//
-//
-// Type: boolean
-//
-
-remove_rays_with_antenna_transitions = FALSE;
-
-///////////// transition_nrays_margin /////////////////
-//
-// Number of transition rays to include as a margin.
-//
-// Sometimes the transition flag is turned on too early in a transition, 
-//   on not turned off quickly enough after a transition. If you set this 
-//   to a number greater than 0, that number of rays will be included at 
-//   each end of the transition, i.e. the transition will effectively be 
-//   shorter at each end by this number of rays.
-//
-//
-// Type: int
-//
-
-transition_nrays_margin = 0;
-
-///////////// trim_surveillance_sweeps_to_360deg //////
-//
-// Option to trip surveillance sweeps so that they only cover 360 
-//   degrees.
-//
-// Some sweeps will have rays which cover more than a 360-degree 
-//   rotation. Often these include antenna transitions. If this is set to 
-//   true, rays are trimmed off either end of the sweep to limit the 
-//   coverage to 360 degrees. The median elevation angle is computed and 
-//   the end ray which deviates from the median in elevation is trimmed 
-//   first.
-//
-//
-// Type: boolean
-//
-
-trim_surveillance_sweeps_to_360deg = TRUE;
-
 ///////////// set_max_range ///////////////////////////
 //
 // Option to set the max range for any ray.
@@ -1348,7 +1300,7 @@ PID_locate_melting_layer = TRUE;
 // Type: double
 //
 
-melting_layer_percentile_for_bottom_limit = 25;
+melting_layer_percentile_for_bottom_limit = 20;
 
 ///////////// melting_layer_percentile_for_top_limit //
 //
@@ -1362,7 +1314,7 @@ melting_layer_percentile_for_bottom_limit = 25;
 // Type: double
 //
 
-melting_layer_percentile_for_top_limit = 75;
+melting_layer_percentile_for_top_limit = 80;
 
 ///////////// melting_layer_write_results_to_spdb /////
 //
@@ -3328,6 +3280,18 @@ output_fields = {
   }
   ,
   {
+    id = PID_INTEREST,
+    name = "PID_INTEREST",
+    long_name = "interest_for_primary_pid",
+    standard_name = "interest_for_primary_pid",
+    units = "",
+    encoding = OUTPUT_ENCODING_INT16,
+    scaling = OUTPUT_SCALING_SPECIFIED,
+    scale = 1,
+    offset = 0
+  }
+  ,
+  {
     id = TEMP_FOR_PID,
     name = "TEMP_FOR_PID",
     long_name = "temperature_for_computing_pid",
@@ -3417,6 +3381,42 @@ output_fields = {
     long_name = "melting_layer_interest",
     standard_name = "melting_layer_interest",
     units = "",
+    encoding = OUTPUT_ENCODING_INT16,
+    scaling = OUTPUT_SCALING_SPECIFIED,
+    scale = 0.01,
+    offset = 0
+  }
+  ,
+  {
+    id = ELEVATION_ANGLE,
+    name = "ELEVATION_ANGLE",
+    long_name = "elevation_angle",
+    standard_name = "elevation_angle",
+    units = "deg",
+    encoding = OUTPUT_ENCODING_INT16,
+    scaling = OUTPUT_SCALING_SPECIFIED,
+    scale = 0.01,
+    offset = 0
+  }
+  ,
+  {
+    id = RANGE,
+    name = "RANGE",
+    long_name = "gate_range",
+    standard_name = "gate_range",
+    units = "km",
+    encoding = OUTPUT_ENCODING_INT16,
+    scaling = OUTPUT_SCALING_SPECIFIED,
+    scale = 0.01,
+    offset = 0
+  }
+  ,
+  {
+    id = BEAM_HEIGHT,
+    name = "BEAM_HEIGHT",
+    long_name = "beam_height_msl",
+    standard_name = "beam_height_msl",
+    units = "km",
     encoding = OUTPUT_ENCODING_INT16,
     scaling = OUTPUT_SCALING_SPECIFIED,
     scale = 0.01,
