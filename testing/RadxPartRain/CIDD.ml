@@ -132,18 +132,23 @@ HCA   HCA mdvp:://localhost:0:$(HOME)/data/hca/test/cfradial/spol/sur&HCA   hca.
 
 ML_INT ML_INT  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ML_INTEREST ml_interest.colors - -5 80 5 radial 1 0
 ML_FLAG ML_FLAG  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ML_INTEREST ml_flag.colors - -5 80 5 radial 1 0
-DBZ_CORR DBZ_CORR mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&DBZ_CORR  dbz.colors   dBZ -5 80 5 radial 1 0
 MELT_LAYER MELT_LAYER  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&melting_layer ml_flag.colors - -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 
 
 PID_INT PID_INT  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&PID_INTEREST interest.colors - -5 80 5 radial 1 0
 WS_INT WS_INT  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ws_interest interest.colors - -5 80 5 radial 1 0
-=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
-=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
+ML_EXT ML_EXT  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ml_extended ml_flag.colors - -5 80 5 radial 1 0
+CONV CONV  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&conv_flag ml_flag.colors - -5 80 5 radial 1 0
 
 BEAMHT   BEAMHT mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&BEAM_HEIGHT  kdp3.colors   - -5 80 5 radial 1 0
 RANGE   RANGE mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&RANGE percent.colors   - -5 80 5 radial 1 0
 ELEVATION ELEVATION mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&ELEVATION_ANGLE  kdp3.colors   - -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
+
+DBZ_CORR DBZ_CORR mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&DBZ_CORR  dbz.colors   dBZ -5 80 5 radial 1 0
+DBZ_CORR2 DBZ_CORR2 mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&DBZ_CORR2  dbz.colors   dBZ -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 =========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 
 =========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
