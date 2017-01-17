@@ -3268,6 +3268,18 @@ output_fields = {
   }
   ,
   {
+    id = KDP_COND,
+    name = "KDP_COND",
+    long_name = "conditional_specific_differential_phase",
+    standard_name = "specific_differential_phase_hv",
+    units = "deg/km",
+    encoding = OUTPUT_ENCODING_INT16,
+    scaling = OUTPUT_SCALING_DYNAMIC,
+    scale = 0.001,
+    offset = 0
+  }
+  ,
+  {
     id = PARTICLE_ID,
     name = "PID",
     long_name = "particle_id",

@@ -117,8 +117,13 @@ CMD_FLAG CMD_FLAG  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&CM
 
 RHOHV_F RHOHV_F  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&RHOHV_F    rhohv.colors   - -5 80 5 radial 1 0
 PHIDP_F PHIDP_F  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&PHIDP_F    phidp.colors  deg -5 80 5 radial 1 0
-KDP KDP  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&KDP    kdp3.colors   deg/km -5 80 5 radial 1 0
 PID   PID mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&PID   pid.colors   - -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
+
+KDP KDP  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&KDP    kdp3.colors   deg/km -5 80 5 radial 1 0
+KDP_COND KDP_COND  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&KDP_COND  kdp3.colors   deg/km -5 80 5 radial 1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
+=========     =========     $(HOME)/case_studies/cfradial/AD&CMD_FLAG  cmd_flag.colors   -   0 0 0   cart  1 0
 
 TEMP4PID   TEMP4PID mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&TEMP_FOR_PID   temp.colors   - -5 80 5 radial 1 0
 KDP4PID KDP4PID  mdvp:://localhost:0:$(HOME)/data/ml/test/cfradial/spol/sur&KDP_FOR_PID    kdp3.colors   deg/km -5 80 5 radial 1 0
