@@ -325,7 +325,7 @@ if ($?prompt) then
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
   alias cvsbom 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 mdixon@titandev6.bom.gov.au'
-  alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.51'
+  alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.49'
 #  alias cvsspol 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -L 5443:mgen.gate.rtf:5443 -p 20022 spol@spol-gate.front.ucar.edu'
   alias cvsspol 'ssh -p 20022 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -L 15443:localhost:5443 spol@spol.dyndns.org'
   alias cvsspol2 'ssh -p 20023 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -L 15443:localhost:5443 spol@spol.dyndns.org'
