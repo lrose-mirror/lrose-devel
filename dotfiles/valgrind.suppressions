@@ -1,0 +1,112 @@
+{
+   <netcdf_unitialized_1>
+   Memcheck:Cond
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN8RadxFile8isNetCDFERKSs
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}
+
+{
+   <netcdf_unitialized_2>
+   Memcheck:Cond
+   fun:_Znam
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN8RadxFile8isNetCDFERKSs
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}
+
+{
+   <netcdf_unitialized_3>
+   Memcheck:Cond
+   fun:strcpy
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN8RadxFile8isNetCDFERKSs
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}
+
+{
+   <netcdf_unitialized_4>
+   Memcheck:Cond
+   fun:strcpy
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN8RadxFile8isNetCDFERKSs
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}
+
+{
+   <netcdf_unitialized_5>
+   Memcheck:Cond
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN11NcfRadxFile10isCfRadialERKSs
+   fun:_ZN8RadxFile19_readFromPathNetCDFERKSsR7RadxVol
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}
+
+{
+   <netcdf_unitialized_6>
+   Memcheck:Cond
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN11NcfRadxFile16_appendSweepInfoERKSs
+   fun:_ZN11NcfRadxFile14_loadSweepInfoERKSt6vectorISsSaISsEE
+   fun:_ZN11NcfRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN8RadxFile19_readFromPathNetCDFERKSsR7RadxVol
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+}
+
+{
+   <netcdf_unitialized_7>
+   Memcheck:Cond
+   fun:_ZN5NcVarC1EP6NcFilei
+   fun:_ZN6NcFileC1EPKcNS_8FileModeEPmmNS_10FileFormatE
+   fun:_ZN13NetcdfClassic8openReadERKSs
+   fun:_ZN11NcfRadxFile9_readPathERKSsm
+   fun:_ZN11NcfRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN8RadxFile19_readFromPathNetCDFERKSsR7RadxVol
+   fun:_ZN8RadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN15GenericRadxFile12readFromPathERKSsR7RadxVol
+   fun:_ZN11RadxCov2Mom12_processFileERKSs
+   fun:_ZN11RadxCov2Mom12_runFilelistEv
+   fun:_ZN11RadxCov2Mom3RunEv
+   fun:main
+}

@@ -1,2 +1,5 @@
---suppressions=/home/spol/.suppressions
+--memcheck:leak-check=full
+--show-leak-kinds=all
+--show-reachable=yes
+--suppressions=~/valgrind.suppressions
 
