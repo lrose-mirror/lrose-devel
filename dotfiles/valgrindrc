@@ -1,5 +1,5 @@
 --memcheck:leak-check=full
 --show-leak-kinds=all
 --show-reachable=yes
---suppressions=~/valgrind.suppressions
+--suppressions=/home/mdtest/git/lrose-devel/dotfiles/valgrind.suppressions
 
