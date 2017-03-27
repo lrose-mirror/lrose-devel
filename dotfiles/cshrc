@@ -62,6 +62,7 @@ endif
 
 setenv LANG C
 setenv LROSE_INSTALL_DIR $HOME/lrose
+setenv LROSE_CORE_DIR $HOME/git/lrose-core
 setenv CODEBASE $HOME/git/lrose-core/codebase
 
 setenv RAP_LIB_DIR $LROSE_INSTALL_DIR/lib
