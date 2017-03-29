@@ -92,8 +92,11 @@ setenv MY_CPPC_CFLAGS " -std=c++11 "
 
 setenv GCC_WARNINGS "-Wall"
 
-setenv READYFLOW_7142_428_LINUX $HOME/svn/spoldrx/trunk/src/ReadyFlow/1.0
-setenv WINDRIVERVERSION 1150
+# building readyflow for spoldrx
+
+setenv WINDRIVERVERSION 1130
+setenv WD_BASEDIR /usr/local/src/WinDriver1130_64
+setenv READYFLOW_71620_LINUX $HOME/git/spoldrx/src/ReadyFlow/linux/3.0
 
 # --- OTHER BUILD SETTINGS
 
