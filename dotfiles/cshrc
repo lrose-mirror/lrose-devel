@@ -261,6 +261,7 @@ if ($?prompt) then
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
   alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
   alias cvsforward 'ssh -a -x -C -Y -R 2401:localhost:2401'
+  alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22'
   alias cvsin 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401'
   alias cvsout 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401'
   alias cvsclosed 'cvs -d :pserver:dixon@cvs:/cvs_closed \!*'
@@ -320,7 +321,9 @@ if ($?prompt) then
   alias cvsipmet 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan@200.145.151.199'
   alias cvscemaden 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan@200.145.151.131'
   alias cvsdow 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@eldora-router.fl-guest.ucar.edu'
+  alias saturn 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
+  alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
@@ -336,6 +339,9 @@ if ($?prompt) then
   alias cvshyper 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@hyper.raf-guest.ucar.edu'
   alias cvsgv 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@rafgv.dyndns.org'
 
+
+  alias hsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 hsrl@hsrl-router.eol.ucar.edu'
+  alias hsrl-archiver 'ssh -p 23 -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 hsrl@hsrl-router.eol.ucar.edu'
 
   alias cvshsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl.fl-guest.ucar.edu'
   alias cvshsrl1 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl-archiver1.fl-guest.ucar.edu'
