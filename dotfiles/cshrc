@@ -327,7 +327,8 @@ if ($?prompt) then
   alias cvsdow 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@eldora-router.fl-guest.ucar.edu'
   alias saturn 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
-  alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
+  #alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
+  alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@spol-RV325.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
@@ -346,6 +347,8 @@ if ($?prompt) then
 
   alias hsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 hsrl@hsrl-router.eol.ucar.edu'
   alias hsrl-archiver 'ssh -p 23 -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 hsrl@hsrl-router.eol.ucar.edu'
+
+  alias kaband 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 ka@kaband-router.eol.ucar.edu'
 
   alias cvshsrl 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl.fl-guest.ucar.edu'
   alias cvshsrl1 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 eol-lidar@hsrl-archiver1.fl-guest.ucar.edu'
