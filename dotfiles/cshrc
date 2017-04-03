@@ -187,6 +187,7 @@ if ( -d $PROJ_DIR ) then
   end
 endif
 
+set path = ($path ~/spol_control/bin)
 set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt4/bin)
 set path = ($path ~/anaconda2/bin)
@@ -241,6 +242,7 @@ if ($?prompt) then
   alias emacsw 'emacs -nw `which \!*`'
   alias viw 'vi `which \!*`'
 
+  alias lls 'ls -altrh --color=tty'
   alias lst 'ls -l \!* | awk \{s+=\$4\}END\{print\ s\}'
   alias la 'ls -la --color=tty'
   alias ll 'ls -l --color=tty'
@@ -265,7 +267,7 @@ if ($?prompt) then
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
   alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
   alias cvsforward 'ssh -a -x -C -Y -R 2401:localhost:2401'
-  alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22'
+  alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80'
   alias cvsin 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401'
   alias cvsout 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401'
   alias cvsclosed 'cvs -d :pserver:dixon@cvs:/cvs_closed \!*'
@@ -328,7 +330,7 @@ if ($?prompt) then
   alias saturn 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   #alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
-  alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@spol-RV325.eol.ucar.edu'
+  alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80 spol@spol-RV325.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
