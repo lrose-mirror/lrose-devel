@@ -46,7 +46,7 @@ endif
 uname -a | grep i686 >& /dev/null
 if ($status == 1) then
 # 64-bit
-  setenv HOST_OS LINUX_CX11
+  setenv HOST_OS LINUX_QT5
   setenv PKG_CONFIG_PATH /usr/lib64/pkgconfig
 else
 # 32-bit
@@ -204,7 +204,7 @@ set path = ($path ~/anaconda2/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
-set path = ($path /opt/local/bin)
+set path = ($path /opt/local/lrose/bin)
 
 set path = ($path \
 	$NCARG_ROOT/bin \
@@ -304,7 +304,7 @@ if ($?prompt) then
   alias ph 'get_host_type'
 
   alias yellowstone 'ssh -a -X -C dixon@yellowstone.ucar.edu'
-  alias cheyene 'ssh -a -X -C dixon@cheyene.ucar.edu'
+  alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
   alias gate 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401 dixon@gateway'
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias aeolus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@aeolus.eol.ucar.edu'
