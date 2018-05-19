@@ -46,7 +46,7 @@ endif
 uname -a | grep i686 >& /dev/null
 if ($status == 1) then
 # 64-bit
-  setenv HOST_OS LINUX_QT5
+  setenv HOST_OS LINUX_LROSE
   setenv PKG_CONFIG_PATH /usr/lib64/pkgconfig
 else
 # 32-bit
@@ -110,7 +110,7 @@ setenv READYFLOW_71620_LINUX $HOME/git/spoldrx/src/ReadyFlow/linux/3.0
 
 # --- OTHER BUILD SETTINGS
 
-setenv QTDIR /usr/local/qt4
+setenv QTDIR /usr/local/qt5
 setenv FC gfortran
 
 # --- LD library path --
@@ -199,7 +199,7 @@ endif
 
 set path = ($path ~/spol_control/bin)
 set path = ($path ~/cidd/bin)
-set path = ($path /usr/lib64/qt4/bin)
+set path = ($path /usr/lib64/qt5/bin)
 set path = ($path ~/anaconda2/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
@@ -211,7 +211,7 @@ set path = ($path \
         /usr/X11R6/bin /sbin /usr/sbin /usr/bin /sbin /bin \
 	/usr/bin/X11 /usr/local/bin /usr/local/sbin \
 	/opt/gfortran/irun/bin \
-        /usr/lib64/qt4/bin /usr/lib/qt4/bin )
+        /usr/lib64/qt5/bin /usr/lib/qt5/bin )
 
 set path = ($path /home/mdtest/src/HDFView/2.11.0/bin )
 
@@ -269,9 +269,10 @@ if ($?prompt) then
   alias gstat 'git status'
   alias gcom 'git commit -am \!*'
   alias gpush 'git push'
-  alias gpull 'git pull'
+  alias gpull 'git pull --ff-only'
   alias gdiff 'git diff '
   alias gdt 'git difftool -g -y '
+  alias glol 'git log --graph --decorate --pretty=oneline --abbrev-commit --all'
 
   alias xx 'xrdb -override ~/.Xdefaults'
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
@@ -316,6 +317,8 @@ if ($?prompt) then
   alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
   alias titan 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@titan.eol.ucar.edu'
   alias mdtest 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@titan.eol.ucar.edu'
+
+  alias altair 'ssh -a -X -Y lroot@eol-altair'
 
   alias devmac 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@rsf-devmac.eol.ucar.edu'
 
