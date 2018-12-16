@@ -1,36 +1,57 @@
 ###########################################################################
 #
-# Makefile for ttest program
+# Makefile for TTest program
 #
 # Mike Dixon, RAP, NCAR, Boulder, CO, 80307, USA
 #
-# July 1996
+# Sept 1998
 #
 ###########################################################################
 
 include $(RAP_MAKE_INC_DIR)/rap_make_macros
 
-TARGET_FILE = ttest
+TARGET_FILE = TTest
 
-LOC_INCLUDES =
+LOC_INCLUDES = -I../include
 LOC_CFLAGS =
-LOC_LDFLAGS =
+LOC_LDFLAGS = -L..
 LOC_LIBS = \
-	-ltoolsa -ldataport -lbz2
+	-ltoolsa -ltdrp -ldataport -lbz2
 
-HDRS =
+HDRS = \
+	$(PARAMS_HH) \
+	Params.hh \
+	TTest.hh
 
-SRCS = ttest.c
+CPPC_SRCS = \
+	$(PARAMS_CC) \
+	Args.cc \
+	Main.cc \
+	TTest.cc
 
 #
-# standard targets
+# tdrp macros
 #
 
-include $(RAP_MAKE_INC_DIR)/rap_make_c_targets
+include $(RAP_MAKE_INC_DIR)/rap_make_tdrp_macros
+
+#
+# C++ targets
+#
+
+include $(RAP_MAKE_INC_DIR)/rap_make_c++_targets
+
+#
+# tdrp targets
+#
+
+include $(RAP_MAKE_INC_DIR)/rap_make_tdrp_c++_targets
 
 #
 # local targets
 #
+
+depend: depend_generic
 
 # DO NOT DELETE THIS LINE -- make depend depends on it.
 
