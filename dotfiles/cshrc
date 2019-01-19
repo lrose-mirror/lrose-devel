@@ -171,7 +171,8 @@ endif
 # --- PYTHON ---
 
 #setenv PYTHONPATH /usr/lib/python2.?/site-packages
-setenv PYTHONPATH ~/anaconda2/pkgs
+#setenv PYTHONPATH ~/anaconda2/pkgs
+setenv PYTHONPATH ~/anaconda3/pkgs
 
 # -------- HSRL --------
 
@@ -200,7 +201,8 @@ endif
 set path = ($path ~/spol_control/bin)
 set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt5/bin)
-set path = ($path ~/anaconda2/bin)
+#set path = ($path ~/anaconda2/bin)
+set path = ($path ~/anaconda3/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
@@ -273,6 +275,9 @@ if ($?prompt) then
   alias gdiff 'git diff '
   alias gdt 'git difftool -g -y '
   alias glol 'git log --graph --decorate --pretty=oneline --abbrev-commit --all'
+
+  alias docker_rm_containers 'docker rm `docker ps -aq`'
+  alias docker_rm_images 'docker rm `docker images -q`'
 
   alias xx 'xrdb -override ~/.Xdefaults'
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
