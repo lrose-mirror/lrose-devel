@@ -171,8 +171,8 @@ endif
 # --- PYTHON ---
 
 #setenv PYTHONPATH /usr/lib/python2.?/site-packages
-#setenv PYTHONPATH ~/anaconda2/pkgs
-setenv PYTHONPATH ~/anaconda3/pkgs
+setenv PYTHONPATH ~/anaconda2/pkgs
+#setenv PYTHONPATH ~/anaconda3/pkgs
 
 # -------- HSRL --------
 
@@ -201,8 +201,8 @@ endif
 set path = ($path ~/spol_control/bin)
 set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt5/bin)
-#set path = ($path ~/anaconda2/bin)
-set path = ($path ~/anaconda3/bin)
+set path = ($path ~/anaconda2/bin)
+#set path = ($path ~/anaconda3/bin)
 set path = ($path $JAVA_HOME/bin $ANT_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
@@ -240,6 +240,7 @@ if ($?prompt) then
   set time = 5
 
   alias ssh 'ssh -XY'
+  alias sshagent 'ssh-agent csh'
 
   alias rm 'rm -i'
   alias mv 'mv -i'
@@ -277,7 +278,7 @@ if ($?prompt) then
   alias glol 'git log --graph --decorate --pretty=oneline --abbrev-commit --all'
 
   alias docker_rm_containers 'docker rm `docker ps -aq`'
-  alias docker_rm_images 'docker rm `docker images -q`'
+  alias docker_rm_images 'docker image rm `docker images -q`'
 
   alias xx 'xrdb -override ~/.Xdefaults'
 # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
@@ -317,9 +318,11 @@ if ($?prompt) then
   alias eldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eldora.eol.ucar.edu'
   alias hail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@hail.eol.ucar.edu'
   alias rain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rain.eol.ucar.edu'
+  alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
   alias reldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eldora.eol.ucar.edu'
   alias rhail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@hail.eol.ucar.edu'
   alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
+  alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
   alias titan 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@titan.eol.ucar.edu'
   alias mdtest 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@titan.eol.ucar.edu'
 
@@ -442,7 +445,7 @@ if ($?prompt) then
 
 # remote desktop to windows servers
 
-  alias windows 'rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} eol-vdesktop.eol.ucar.edu &'
+  alias windows '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} eol-vdesktop.eol.ucar.edu &'
 
 # rsync releases
 
