@@ -102,6 +102,13 @@ setenv MY_CPPC_CFLAGS " -std=c++11 "
 setenv GCC_WARNINGS "-Wall"
 
 ##################################################
+# APAR BUILD
+
+if (-f $HOME/git/apar-backend/build/set_build_env.csh) then
+  source $HOME/git/apar-backend/build/set_build_env.csh
+endif
+
+##################################################
 # building readyflow for spoldrx
 
 setenv WINDRIVERVERSION 1130
@@ -188,6 +195,10 @@ set path = (.)
 
 if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
+endif
+
+if ( -d $APAR_INSTALL_DIR/bin ) then
+  set path = ($path $APAR_INSTALL_DIR/bin)
 endif
 
 if ( -d $PROJ_DIR ) then
@@ -319,10 +330,15 @@ if ($?prompt) then
   alias hail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@hail.eol.ucar.edu'
   alias rain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rain.eol.ucar.edu'
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
+  alias fog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@fog.eol.ucar.edu'
+  alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind-fl.eol.ucar.edu'
   alias reldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eldora.eol.ucar.edu'
   alias rhail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@hail.eol.ucar.edu'
   alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
   alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
+  alias rfog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@fog.eol.ucar.edu'
+  alias rwind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@wind-fl.eol.ucar.edu'
+  alias awind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 apar@wind-fl.eol.ucar.edu'
   alias titan 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@titan.eol.ucar.edu'
   alias mdtest 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@titan.eol.ucar.edu'
 
@@ -354,6 +370,9 @@ if ($?prompt) then
   alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   #alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
   alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80 spol@spol-RV325.eol.ucar.edu'
+# the following is 192.118.80.40
+  alias spollab 'ssh -p 22 -a -XY spol@spol-router2.eol.ucar.edu'
+  alias sshapar 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
