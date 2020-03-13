@@ -15,7 +15,7 @@ set autologout=0
 
 umask 002
 setenv TAPE /dev/st0
-setenv PRINTER eol-nwcolor
+setenv PRINTER eol-color-nw
 #setenv PRINTER newcolor
 
 #unsetenv MANPATH
@@ -63,9 +63,13 @@ endif
 # Set the build environment
 
 setenv LANG C
-setenv LROSE_INSTALL_DIR $HOME/lrose
-setenv LROSE_CORE_DIR $HOME/git/lrose-core
-setenv CODEBASE $HOME/git/lrose-core/codebase
+#setenv LROSE_INSTALL_DIR $HOME/lrose
+#setenv LROSE_CORE_DIR $HOME/git/lrose-core
+#setenv CODEBASE $HOME/git/lrose-core/codebase
+
+setenv LROSE_INSTALL_DIR $HOME/lrose-mdv64
+setenv LROSE_CORE_DIR $HOME/git/mdv64/lrose-core
+setenv CODEBASE $HOME/git/mdv64/lrose-core/codebase
 
 # uncomment for CVS build
 
@@ -100,7 +104,8 @@ setenv MY_CFLAGS
 #setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
 setenv MY_CPPC_CFLAGS " -std=c++11 "
 
-setenv GCC_WARNINGS "-Wall"
+#setenv GCC_WARNINGS "-Wall --pedantic"
+setenv GCC_WARNINGS "-Wall "
 
 ##################################################
 # APAR BUILD
@@ -339,8 +344,8 @@ if ($?prompt) then
   alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
   alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
   alias rfog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@fog.eol.ucar.edu'
-  alias rwind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@wind-fl.eol.ucar.edu'
-  alias awind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 apar@wind-fl.eol.ucar.edu'
+  alias rwind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@wind.eol.ucar.edu'
+  alias awind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 apar@wind.eol.ucar.edu'
   alias titan 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@titan.eol.ucar.edu'
   alias mdtest 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@titan.eol.ucar.edu'
 
@@ -373,8 +378,10 @@ if ($?prompt) then
   #alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
   alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80 spol@spol-RV325.eol.ucar.edu'
 # the following is 192.118.80.40
-  alias spollab 'ssh -p 22 -a -XY spol@spol-router2.eol.ucar.edu'
+  alias spollab 'ssh -p 22 -a -XY spol@spol-router.eol.ucar.edu'
   alias sshapar 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
+  alias aparsim 'ssh -p 23 -a -XY apar@spol-router.eol.ucar.edu'
+  alias apartrenton 'ssh -p 24 -a -XY apar@spol-router.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
@@ -395,7 +402,8 @@ if ($?prompt) then
   alias hsrl-archiver 'ssh -p 23 -a -XY hsrl@hsrl-router.eol.ucar.edu'
   alias hsrl-archiver2 'ssh -p 24 -a -XY hsrl@hsrl-router.eol.ucar.edu'
 
-  alias kaband 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 ka@kaband-router.eol.ucar.edu'
+  alias kaband 'ssh -a -XY -C spol@128.117.78.147'
+#  alias kaband 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 ka@kaband-router.eol.ucar.edu'
 
   alias cvsmgen6 'ssh -p 6666 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80  titan5@50.194.132.139'
   alias cvsmgen7 'ssh -p 7777 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@dow7.ddns.net'
@@ -465,6 +473,7 @@ if ($?prompt) then
 # remote desktop to windows servers
 
   alias windows '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} eol-vdesktop.eol.ucar.edu &'
+  alias windows-lrose '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u lrose -r disk:home=${HOME} eol-lrose-dev.eol.ucar.edu &'
 
 # rsync releases
 
