@@ -472,7 +472,8 @@ if ($?prompt) then
 
 # remote desktop to windows servers
 
-  alias windows '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} eol-vdesktop.eol.ucar.edu &'
+  alias windows 'krdc > /dev/null &'
+#  alias windows '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} eol-vdesktop.eol.ucar.edu &'
   alias windows-lrose '~/rdesktop/bin/rdesktop -g2500x1500 -a 16 -d cit -u lrose -r disk:home=${HOME} eol-lrose-dev.eol.ucar.edu &'
 
 # rsync releases
