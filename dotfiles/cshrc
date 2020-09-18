@@ -33,7 +33,6 @@ set hostname=`hostname`
 #
 
 setenv CVSUSER dixon
-#setenv CVSROOT :pserver:${CVSUSER}@localhost:/cvs
 setenv CVSROOT :pserver:${CVSUSER}@cvs.rap.ucar.edu:/cvs
 
 # git completion
@@ -46,9 +45,14 @@ endif
 # Set the build environment - LINUX
 
 setenv LANG C
+
 setenv HOST_OS LINUX_LROSE
 setenv LROSE_INSTALL_DIR $HOME/lrose
 setenv LROSE_CORE_DIR $HOME/git/lrose-core
+
+#setenv HOST_OS LINUX_64_CIDD32
+#setenv LROSE_INSTALL_DIR $HOME/cidd
+#setenv LROSE_CORE_DIR $HOME/cidd/lrose-core
 
 setenv MY_NETCDF4_INCS
 setenv MY_NETCDF4_LIBS
@@ -155,6 +159,10 @@ if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
 
+if ( -d ~/cidd/bin ) then
+  set path = ($path ~/cidd/bin)
+endif
+
 #if ( -d $APAR_INSTALL_DIR/bin ) then
 #  set path = ($path $APAR_INSTALL_DIR/bin)
 #endif
@@ -168,9 +176,7 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
-set path = ($path ~/cidd/bin)
 set path = ($path /usr/lib64/qt5/bin)
-#set path = ($path ~/anaconda2/bin)
 set path = ($path ~/anaconda3/bin)
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
 set path = ($path /usr/bin)
