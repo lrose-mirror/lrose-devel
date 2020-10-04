@@ -69,38 +69,37 @@ def main():
     repos.append("https://github.com/ncar/CfRadial")
     repos.append("https://github.com/ncar/HCR_instrument")
     repos.append("https://github.com/ncar/hsrl_configuration")
-#    repos.append("https://github.com/ncar/hsrl_instrument")
+    repos.append("https://github.com/ncar/hsrl_instrument")
     repos.append("https://github.com/ncar/ka-band_instrument")
     repos.append("https://github.com/ncar/lrose-cedric")
-#    repos.append("https://github.com/ncar/lrose-devel")
+    repos.append("https://github.com/ncar/lrose-devel")
     repos.append("https://github.com/ncar/lrose-displays")
     repos.append("https://github.com/ncar/lrose-docs")
-#    repos.append("https://github.com/ncar/lrose-eumetsat")
+    repos.append("https://github.com/ncar/lrose-eumetsat")
     repos.append("https://github.com/ncar/lrose-examples")
     repos.append("https://github.com/ncar/lrose-hurricane-lane")
-#    repos.append("https://github.com/ncar/lrose-lucid")
-#    repos.append("https://github.com/ncar/lrose-ncms")
+    repos.append("https://github.com/ncar/lrose-lucid")
+    repos.append("https://github.com/ncar/lrose-ncms")
     repos.append("https://github.com/ncar/lrose-netcdf")
-#    repos.append("https://github.com/ncar/lrose-pound")
+    repos.append("https://github.com/ncar/lrose-pound")
     repos.append("https://github.com/ncar/lrose-projects-eolbase")
     repos.append("https://github.com/ncar/lrose-projects-lakevic")
     repos.append("https://github.com/ncar/lrose-projects-relampago")
     repos.append("https://github.com/ncar/lrose-solo3")
     repos.append("https://github.com/ncar/lrose-soloii")
-#    repos.append("https://github.com/ncar/lrose-sysview")
-#    repos.append("https://github.com/ncar/lrose-test")
+    repos.append("https://github.com/ncar/lrose-sysview")
+    repos.append("https://github.com/ncar/lrose-test")
     repos.append("https://github.com/ncar/lrose-titan")
-#    repos.append("https://github.com/ncar/spol-configuration")
-#    repos.append("https://github.com/ncar/spol-control")
-#    repos.append("https://github.com/ncar/spol-instrument")
-#    repos.append("https://github.com/ncar/spol-test")
-#    repos.append("https://github.com/ncar/spoldrx")
+    repos.append("https://github.com/ncar/spol-configuration")
+    repos.append("https://github.com/ncar/spol-control")
+    repos.append("https://github.com/ncar/spol-instrument")
+    repos.append("https://github.com/ncar/spoldrx")
     repos.append("https://github.com/ncar/titan-cswr")
-#    repos.append("https://github.com/ncar/titan-dowdrx")
+    repos.append("https://github.com/ncar/titan-dowdrx")
     repos.append("https://github.com/ncar/titan-java")
-#    repos.append("https://github.com/ncar/titan-legacy")
+    repos.append("https://github.com/ncar/titan-legacy")
     repos.append("https://github.com/ncar/titan-templates")
-#    repos.append("https://github.com/ncar/titan-web")
+    repos.append("https://github.com/ncar/titan-web")
     repos.append("https://github.com/ncar/xpol-configuration")
 
     repos.append("https://github.com/mmbell/fractl")
@@ -115,10 +114,17 @@ def main():
 ########################################################################
 # check out repos from git
 
-def gitCheckout(repo):
+def gitCheckout(repoUrl):
 
-    print("checking out repo:", repo, file=sys.stderr)
-    shellCmd("git clone " + repo)
+    parts = repoUrl.split("/")
+    repoName = parts[len(parts) - 1]
+    
+    if (os.path.isdir(repoName)):
+        print("repo already checkout out, ignoring:", repoName, file=sys.stderr)
+        return
+    
+    print("checking out repo:", repoUrl, file=sys.stderr)
+    shellCmd("git clone " + repoUrl)
 
 ########################################################################
 # Run a command in a shell, wait for it to complete
