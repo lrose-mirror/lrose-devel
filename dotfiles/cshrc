@@ -386,6 +386,9 @@ if ($?prompt) then
   alias rsyncchill "rsync -av --rsh='ssh -p20789' dixon@xlab.chill.colostate.edu:"
   alias rsyncspol "rsync -av --rsh='ssh -p20022' dspol@spol.dyndns.org:/tmp"
 
+  alias nc_send 'tar cf - . | pv | nc -l -l 5555 '
+  alias nc_receive 'nc snow 5555 | pv | tar xf - '
+
   alias chilldisplay 'ssh -a -X -C -R 2401:cvs.rap.ucar.edu:2401 operator@128.117.82.183'
 
   alias svngate 'ssh -p 23 -a -x -X -C -R 8888:svn.eol.ucar.edu:80 operator@spol-gate.ucar.edu'
