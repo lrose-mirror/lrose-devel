@@ -177,7 +177,7 @@ endif
 
 set path = ($path ~/spol_control/bin)
 set path = ($path /usr/lib64/qt5/bin)
-set path = ($path ~/anaconda3/bin)
+#set path = ($path ~/anaconda3/bin)
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
