@@ -64,6 +64,9 @@ setenv GCC_WARNINGS "-Wall "
 setenv QTDIR /usr/local/qt5
 setenv FC gfortran
 
+setenv PKG_CONFIG_PATH /usr/local/Cellar/qt@5/5.15.2/lib/pkgconfig
+
+
 # --- LD library path --
 
 setenv LD_LIBRARY_PATH $LROSE_INSTALL_DIR/lib
