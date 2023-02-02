@@ -12,11 +12,12 @@ endif
 
 unset autologout
 set autologout=0
+balooctl disable >& /dev/null
 
 umask 002
 setenv TAPE /dev/st0
-setenv PRINTER eol-color-nw
-#setenv PRINTER new-color
+#setenv PRINTER eol-color-nw
+setenv PRINTER ET-2720-Series
 
 #unsetenv MANPATH
 
@@ -33,7 +34,8 @@ set hostname=`hostname`
 #
 
 setenv CVSUSER dixon
-setenv CVSROOT :pserver:${CVSUSER}@cvs.rap.ucar.edu:/cvs
+#setenv CVSROOT :pserver:${CVSUSER}@cvs.rap.ucar.edu:/cvs
+setenv CVSROOT :pserver:${CVSUSER}@localhost:/cvs
 
 # git completion
 
@@ -48,20 +50,21 @@ setenv LANG C
 
 setenv HOST_OS LINUX_LROSE
 setenv LROSE_INSTALL_DIR $HOME/lrose
+#setenv LROSE_INSTALL_DIR $HOME/test2
 setenv LROSE_CORE_DIR $HOME/git/lrose-core
 
 #setenv HOST_OS LINUX_64_CIDD32
 #setenv LROSE_INSTALL_DIR $HOME/cidd
-#setenv LROSE_CORE_DIR $HOME/cidd/lrose-core
+#setenv LROSE_CORE_DIR $HOME/git/lrose-core
 
 setenv MY_NETCDF4_INCS
 setenv MY_NETCDF4_LIBS
 setenv MY_CFLAGS
-#setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
-setenv MY_CPPC_CFLAGS " -std=c++11 "
+setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
+#setenv MY_CPPC_CFLAGS " -std=c++11 "
 
-#setenv GCC_WARNINGS "-Wall --pedantic"
-setenv GCC_WARNINGS "-Wall "
+setenv GCC_WARNINGS "-Wall --pedantic"
+#setenv GCC_WARNINGS "-Wall "
 
 ##################################################
 # APAR BUILD - deprecated
@@ -92,9 +95,10 @@ setenv NCARG_ROOT /usr/local/ncarg
 
 # --- JAVA ---
 
-#setenv JAVA_HOME /usr/java/latest
-setenv JAVA_HOME /usr
-setenv ANT_HOME /usr/local/ant
+setenv JAVA_HOME /usr/java/latest
+#setenv JAVA_HOME /usr
+#setenv ANT_HOME /usr/local/ant
+setenv ANT_HOME $HOME/git/lrose-jazz/ant
 #setenv ANT_HOME /usr/bin/ant
 setenv RAP_INST_JAVA_DIR /home/dixon/cvs/java/dist/lib
 
@@ -139,8 +143,6 @@ endif
 
 # --- PYTHON ---
 
-#setenv PYTHONPATH /usr/lib/python2.?/site-packages
-#setenv PYTHONPATH ~/anaconda2/pkgs
 setenv PYTHONPATH ~/anaconda3/pkgs
 
 # -------- HSRL --------
@@ -159,9 +161,9 @@ if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
 
-if ( -d ~/cidd/bin ) then
-  set path = ($path ~/cidd/bin)
-endif
+#if ( -d $HOME/lrose/bin ) then
+#  set path = ($path $HOME/lrose/bin)
+#endif
 
 #if ( -d $APAR_INSTALL_DIR/bin ) then
 #  set path = ($path $APAR_INSTALL_DIR/bin)
@@ -177,9 +179,12 @@ endif
 
 set path = ($path ~/spol_control/bin)
 set path = ($path /usr/lib64/qt5/bin)
-#set path = ($path ~/anaconda3/bin)
+
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
+
+set path = ($path ~/anaconda3/bin)
 set path = ($path /usr/bin)
+
 set path = ($path ~/bin)
 set path = ($path /opt/local/lrose/bin)
 
@@ -191,6 +196,11 @@ set path = ($path \
         /usr/lib64/qt5/bin /usr/lib/qt5/bin )
 
 set path = ($path /home/mdtest/src/HDFView/2.11.0/bin )
+
+if ( -d ~/cidd/bin ) then
+  set path = ($path ~/cidd/bin)
+endif
+
 
 # -- core files --
 # unlimit coredumpsize
@@ -256,8 +266,8 @@ if ($?prompt) then
   alias docker_rm_images 'docker image rm `docker images -q`'
 
   alias xx 'xrdb -override ~/.Xdefaults'
-# alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
-  alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
+  alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
+#  alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
   alias cvsforward 'ssh -a -x -C -Y -R 2401:localhost:2401'
   alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80'
   alias cvsin 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401'
@@ -289,7 +299,8 @@ if ($?prompt) then
   alias jetstream 'ssh -a -X -C dixon@149.165.169.95'
   alias yellowstone 'ssh -a -X -C dixon@yellowstone.ucar.edu'
   alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
-  alias gate 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401 dixon@gateway'
+  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 dixon@tikal.eol.ucar.edu'
+  alias grsync "rsync -av --rsh='ssh -p2222' mdtest@localhost:"
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
   alias aeolus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@aeolus.eol.ucar.edu'

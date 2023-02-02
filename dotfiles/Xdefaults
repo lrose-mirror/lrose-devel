@@ -7,7 +7,7 @@ xterm*foreground:	green
 xterm*font:	        9x15
 xterm*scrollBar:	true
 xterm*saveLines:	2000
-xterm*VT100*geometry:	80x55
+xterm*VT100*geometry:	80x20
 xterm*name:	xterm
 
 Emacs*Background:               black
