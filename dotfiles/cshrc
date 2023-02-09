@@ -141,6 +141,10 @@ if (-f $PROJ_DIR/system/params/site_info) then
   source $PROJ_DIR/system/params/site_info
 endif
 
+if (-f $PROJ_DIR/system/params/project_info) then
+  source $PROJ_DIR/system/params/project_info
+endif
+
 # --- PYTHON ---
 
 setenv PYTHONPATH ~/anaconda3/pkgs
@@ -299,8 +303,14 @@ if ($?prompt) then
   alias jetstream 'ssh -a -X -C dixon@149.165.169.95'
   alias yellowstone 'ssh -a -X -C dixon@yellowstone.ucar.edu'
   alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
+
 #  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 dixon@tikal.eol.ucar.edu'
   alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 mdtest@titan.eol.ucar.edu'
+
+  alias gpc 'globalprotect connect --portal gp.ucar.edu'
+  alias gpd 'globalprotect disconnect'
+  alias gps 'globalprotect show --status'
+  
   alias grsync "rsync -av --rsh='ssh -p2222' mdtest@localhost:"
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
