@@ -23,9 +23,6 @@ setenv PRINTER ET-2720-Series
 
 setenv EDITOR emacs
 setenv PAGER less
-setenv LESS "-cMe"
-setenv LESSOPEN "|lesspipe.sh %s"
-setenv LESSCHARSET latin1
 
 # hostname
 
