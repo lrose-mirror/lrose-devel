@@ -31,7 +31,6 @@ set hostname=`hostname`
 #
 
 setenv CVSUSER dixon
-#setenv CVSROOT :pserver:${CVSUSER}@cvs.rap.ucar.edu:/cvs
 setenv CVSROOT :pserver:${CVSUSER}@localhost:/cvs
 
 # git completion
@@ -47,7 +46,6 @@ setenv LANG C
 
 setenv HOST_OS LINUX_LROSE
 setenv LROSE_INSTALL_DIR $HOME/lrose
-#setenv LROSE_INSTALL_DIR $HOME/test2
 setenv LROSE_CORE_DIR $HOME/git/lrose-core
 
 #setenv HOST_OS LINUX_64_CIDD32
@@ -62,13 +60,6 @@ setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
 
 setenv GCC_WARNINGS "-Wall --pedantic"
 #setenv GCC_WARNINGS "-Wall "
-
-##################################################
-# APAR BUILD - deprecated
-
-#if (-f $HOME/git/apar-backend/build/set_build_env.csh) then
-#  source $HOME/git/apar-backend/build/set_build_env.csh
-#endif
 
 ##################################################
 # building readyflow for spoldrx
@@ -166,10 +157,6 @@ endif
 #  set path = ($path $HOME/lrose/bin)
 #endif
 
-#if ( -d $APAR_INSTALL_DIR/bin ) then
-#  set path = ($path $APAR_INSTALL_DIR/bin)
-#endif
-
 if ( -d $PROJ_DIR ) then
   foreach dir ($PROJ_DIR/*)
     if (-d $dir/scripts) then
@@ -238,8 +225,6 @@ if ($?prompt) then
 
   alias catw 'cat `which \!*`'
   alias lessw 'less `which \!*`'
-  alias emacsw 'emacs -nw `which \!*`'
-  alias viw 'vi `which \!*`'
 
   alias lls 'ls -altrh --color=tty'
   alias lst 'ls -l \!* | awk \{s+=\$4\}END\{print\ s\}'
@@ -247,13 +232,6 @@ if ($?prompt) then
   alias ll 'ls -l --color=tty'
   alias lt 'ls -lt --color=tty'
   alias lat 'ls -alt --color=tty'
-  alias l 'ls -sF'
-  alias L ls -agl
-  alias LS ls -aFRts 
-
-  alias clone-cfradial 'git clone https://github.com/NCAR/CfRadial'
-  alias clone-lrose-core 'git clone https://github.com/NCAR/lrose-core'
-  alias clone-lrose-netcdf 'git clone https://github.com/NCAR/lrose-netcdf'
 
   alias gstat 'git status'
   alias gcom 'git commit -am \!*'
@@ -268,26 +246,17 @@ if ($?prompt) then
 
   alias xx 'xrdb -override ~/.Xdefaults'
   alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
-#  alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
   alias cvsforward 'ssh -a -x -C -Y -R 2401:localhost:2401'
   alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80'
   alias cvsin 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401'
   alias cvsout 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401'
   alias cvsclosed 'cvs -d :pserver:dixon@cvs:/cvs_closed \!*'
 
-#  alias sshhome 'ssh -Y 12.253.86.112'
-#  alias cvshome 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 71.237.89.27'
-
   alias psg 'ps axww | sed -n "1p; \|sed .*/\!*/|d; /\!*/p"'
   alias pslg 'ps alxww | sed -n "1p; \|sed .*/\!*/|d; /\!*/p"'
   alias psug 'ps auxww | sed -n "1p; \|sed .*/\!*/|d; /\!*/p"'
   alias psx 'ps xww | grep -v LogFilter'
   alias ensc 'enscript -2r -fCourier7'
-
-  alias looka 'grep \!* /usr/lib/aliases'
-  alias lookg 'grep \!* /etc/group'
-  alias lookp 'grep \!* /etc/passwd'
-  alias lookh 'grep \!* /etc/hosts'
 
   alias print_procmap 'print_procmap -hb -up -status'
   alias PrintDataMap 'PrintDataMap -all -relt -lreg'
@@ -301,7 +270,6 @@ if ($?prompt) then
   alias yellowstone 'ssh -a -X -C dixon@yellowstone.ucar.edu'
   alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
 
-#  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 dixon@tikal.eol.ucar.edu'
   alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 mdtest@titan.eol.ucar.edu'
 
   alias gpc 'globalprotect connect --portal gp.ucar.edu'
@@ -326,6 +294,7 @@ if ($?prompt) then
   alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
   alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
   alias rsleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@sleet.eol.ucar.edu'
+  alias rcirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@cirrus.eol.ucar.edu'
   alias rfog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@fog.eol.ucar.edu'
   alias rwind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@wind.eol.ucar.edu'
   alias awind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 apar@wind.eol.ucar.edu'
@@ -334,14 +303,6 @@ if ($?prompt) then
   alias mdtest 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@titan.eol.ucar.edu'
 
   alias altair 'ssh -a -X -Y lroot@eol-altair'
-
-  alias devmac 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 mdtest@rsf-devmac.eol.ucar.edu'
-
-#  alias devmac_desktop 'rdesktop -g2500x1500 -a 16 -d cit -u dixon -r disk:home=${HOME} rsf-devmac.eol.ucar.edu '
-  alias devmac_desktop 'vncviewer -geometry 2500x1500 rsf-devmac.eol.ucar.edu:0 '
-
-  alias sci4 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@sci4.eol.ucar.edu'
-  alias hawk 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@hawk.eol.ucar.edu'
 
   alias rsfdata 'su - rsfdata'
 
@@ -359,9 +320,7 @@ if ($?prompt) then
   alias cvsdow 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@eldora-router.fl-guest.ucar.edu'
   alias saturn 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
   alias cvslab 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@128.117.85.36'
-  #alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 spol@128.117.85.36'
   alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80 spol@spol-RV325.eol.ucar.edu'
-# the following is 192.118.80.40
   alias spollab 'ssh -p 22 -a -XY spol@spol-router.eol.ucar.edu'
   alias sshapar 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
   alias aparsim 'ssh -p 23 -a -XY apar@spol-router.eol.ucar.edu'
@@ -371,7 +330,6 @@ if ($?prompt) then
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
   alias cvsbom 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 mdixon@titandev6.bom.gov.au'
   alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.60'
-#  alias control1 'ssh -a -x -X -C -p 20022 spol@spol-gate.front.ucar.edu'
   alias control1 'ssh -p 20022 -a -x -X -C spol@spol.dyndns.org'
   alias control2 'ssh -p 20023 -a -x -X -C spol@spol.dyndns.org'
   alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
@@ -382,13 +340,11 @@ if ($?prompt) then
   alias cvshyper 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@hyper.raf-guest.ucar.edu'
   alias cvsgv 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@rafgv.dyndns.org'
 
-
   alias hsrl 'ssh -a -XY hsrl@hsrl-router.eol.ucar.edu'
   alias hsrl-archiver 'ssh -p 23 -a -XY hsrl@hsrl-router.eol.ucar.edu'
   alias hsrl-archiver2 'ssh -p 24 -a -XY hsrl@hsrl-router.eol.ucar.edu'
 
   alias kaband 'ssh -a -XY -C spol@128.117.78.147'
-#  alias kaband 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 ka@kaband-router.eol.ucar.edu'
 
   alias cvsmgen6 'ssh -p 6666 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80  titan5@50.194.132.139'
   alias cvsmgen7 'ssh -p 7777 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@dow7.ddns.net'
@@ -397,8 +353,6 @@ if ($?prompt) then
   alias cswr7 'ssh -p 7777 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 titan5@50.194.132.139'
   alias cswr8 'ssh -p 8888 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 titan5@50.194.132.139'
 
-  alias svngate 'ssh -p 23 -a -x -X -C -R 8888:svn.eol.ucar.edu:80 operator@spol-gate.ucar.edu'
-  alias cvsate 'ssh -p 24 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 operator@spol-gate.ucar.edu'
   alias tunnelspol 'ssh -a -x -X -C -R 5443:refr1:5445 -R 5440:refr1:5440 -L 2512:iq:2512 operator@spol-gate.ucar.edu'
 
   alias ccvs 'cvs -d :pserver:anonymous@lab.chill.colostate.edu:/home/cvs \!*'
@@ -435,27 +389,20 @@ if ($?prompt) then
   alias k8 'ssh -a -X -Y -C dixon@k8.rap.ucar.edu'
   alias k5 'ssh -a -X -Y -C dixon@k5.rap.ucar.edu'
   alias dc3 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rhsc.eol.ucar.edu'
-#  alias hawk 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 operator@hawk.eol.ucar.edu'
   alias sshxpol 'ssh -a -X -Y -C radarop@128.117.200.10'
-# alias cvsxpol 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 radarop@xpol'
   alias xpol_camera 'ssh -L 8080:192.168.99.101:80 dixon@cumulus'
   alias vapor 'ssh -a -X -Y -C ice@vapor'
 # alias xpol 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 radarop@128.117.47.56'
   alias ice 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@ice.eol.ucar.edu'
 # alias titan 'ssh -a -X -Y -C dixon@titan.rap.ucar.edu'
   alias exposure 'ssh -a -X -Y -C dixon@exposure.rap.ucar.edu'
-  alias eldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eldora.eol.ucar.edu'
   alias cp2data 'ssh titan5@cp2data'
-
-  alias rh32 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rsf-rh6-32.eol.ucar.edu'
-  alias rh64 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rsf-rh6-64.eol.ucar.edu'
 
   alias cvsforward22 'ssh -p 22 -a -x -C -R 2401:localhost:2401'
 
   alias cvsr 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401'
   alias saws 'ssh titan5@196.25.43.229'
   alias cvssaws 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@196.25.43.229'
-
 
 # remote desktop to windows servers
 
