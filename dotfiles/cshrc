@@ -16,8 +16,8 @@ balooctl disable >& /dev/null
 
 umask 002
 setenv TAPE /dev/st0
-#setenv PRINTER eol-color-nw
-setenv PRINTER ET-2720-Series
+setenv PRINTER eol-color-nw
+#setenv PRINTER ET-2720-Series
 
 #unsetenv MANPATH
 
