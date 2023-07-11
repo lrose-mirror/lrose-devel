@@ -83,8 +83,8 @@ setenv NCARG_ROOT /usr/local/ncarg
 
 # --- JAVA ---
 
-setenv JAVA_HOME /usr/java/latest
-#setenv JAVA_HOME /usr
+#setenv JAVA_HOME /usr/java/latest
+setenv JAVA_HOME ~/java/jdk-18.0.2.1
 #setenv ANT_HOME /usr/local/ant
 setenv ANT_HOME $HOME/git/lrose-jazz/ant
 #setenv ANT_HOME /usr/bin/ant
@@ -171,6 +171,7 @@ set path = ($path /usr/lib64/qt5/bin)
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
 
 set path = ($path ~/anaconda3/bin)
+set path = ($path ~/java/jdk-18.0.2.1/bin/java/bin)
 set path = ($path /usr/bin)
 
 set path = ($path ~/bin)
@@ -285,6 +286,7 @@ if ($?prompt) then
   alias rain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rain.eol.ucar.edu'
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
   alias sleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@sleet.eol.ucar.edu'
+  alias cirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@cirrus.eol.ucar.edu'
   alias fog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@fog.eol.ucar.edu'
   alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind.eol.ucar.edu'
   alias finecast 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-finecast.eol.ucar.edu'
