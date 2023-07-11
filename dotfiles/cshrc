@@ -397,7 +397,8 @@ if ($?prompt) then
 # alias xpol 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 radarop@128.117.47.56'
   alias ice 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@ice.eol.ucar.edu'
 # alias titan 'ssh -a -X -Y -C dixon@titan.rap.ucar.edu'
-  alias exposure 'ssh -a -X -Y -C dixon@exposure.rap.ucar.edu'
+  alias exposure 'ssh -a -X -Y -C dixon@daylight.rap.ucar.edu'
+  alias daylight 'ssh -a -X -Y -C dixon@daylight.rap.ucar.edu'
   alias cp2data 'ssh titan5@cp2data'
 
   alias cvsforward22 'ssh -p 22 -a -x -C -R 2401:localhost:2401'
