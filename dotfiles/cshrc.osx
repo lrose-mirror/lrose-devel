@@ -158,6 +158,12 @@ if ( -d $PROJ_DIR ) then
   end
 endif
 
+if ( -d /opt/homebrew/Cellar/qt@5 ) then
+  foreach dir (/opt/homebrew/Cellar/qt@5/*)
+    set path = ($path $dir/bin)
+  end
+endif
+
 set path = ($path ~/spol_control/bin)
 set path = ($path /usr/lib64/qt5/bin)
 #set path = ($path ~/anaconda3/bin)
@@ -174,6 +180,8 @@ set path = ($path \
         /usr/lib64/qt5/bin /usr/lib/qt5/bin )
 
 set path = ($path /home/mdtest/src/HDFView/2.11.0/bin )
+set path = ($path /opt/homebrew/bin )
+
 
 # -- core files --
 # unlimit coredumpsize
