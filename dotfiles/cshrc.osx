@@ -77,7 +77,8 @@ setenv NCARG_ROOT /usr/local/ncarg
 
 # --- JAVA ---
 
-setenv JAVA_HOME /usr
+#setenv JAVA_HOME /usr
+setenv JAVA_HOME ~/java
 setenv ANT_HOME /usr/local/ant
 setenv RAP_INST_JAVA_DIR /home/dixon/cvs/java/dist/lib
 
@@ -123,7 +124,6 @@ endif
 # --- PYTHON ---
 
 #setenv PYTHONPATH /usr/lib/python2.?/site-packages
-#setenv PYTHONPATH ~/anaconda2/pkgs
 setenv PYTHONPATH ~/anaconda3/pkgs
 
 # -------- HSRL --------
@@ -166,7 +166,7 @@ endif
 
 set path = ($path ~/spol_control/bin)
 set path = ($path /usr/lib64/qt5/bin)
-#set path = ($path ~/anaconda3/bin)
+set path = ($path ~/anaconda3/bin)
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
 set path = ($path /usr/bin)
 set path = ($path ~/bin)
@@ -280,7 +280,8 @@ if ($?prompt) then
   alias jetstream 'ssh -a -X -C dixon@149.165.169.95'
   alias yellowstone 'ssh -a -X -C dixon@yellowstone.ucar.edu'
   alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
-  alias gate 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401 dixon@gateway'
+  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 mdtest@titan.eol.ucar.edu'
+  alias grsync 'rsync -av --rsh='ssh -p2222' mdtest@localhost:'
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
   alias aeolus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@aeolus.eol.ucar.edu'
