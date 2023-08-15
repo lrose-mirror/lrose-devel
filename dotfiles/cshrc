@@ -305,7 +305,8 @@ if ($?prompt) then
   alias cheyenne 'ssh -a -X -C dixon@cheyenne.ucar.edu'
 
 #  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 dixon@tikal.eol.ucar.edu'
-  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 mdtest@titan.eol.ucar.edu'
+#  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:titan.eol.ucar.edu:22 mdtest@titan.eol.ucar.edu'
+  alias gate 'ssh -XY -J gate.ucar.edu -L 2222:cirrus.eol.ucar.edu:22 rsfdata@cirrus.eol.ucar.edu'
 
   alias gpc 'globalprotect connect --portal gp.ucar.edu'
   alias gpd 'globalprotect disconnect'
