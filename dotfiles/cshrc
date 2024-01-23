@@ -16,8 +16,9 @@ balooctl disable >& /dev/null
 
 umask 002
 setenv TAPE /dev/st0
-setenv PRINTER eol-color-nw
 #setenv PRINTER ET-2720-Series
+#setenv PRINTER eol-color-nw
+setenv PRINTER HP-Color-Laserjet-5M
 
 #unsetenv MANPATH
 
@@ -290,6 +291,7 @@ if ($?prompt) then
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
   alias sleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@sleet.eol.ucar.edu'
   alias smaug 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-smaug.eol.ucar.edu'
+  alias virga 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-virga.eol.ucar.edu'
   alias cirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@cirrus.eol.ucar.edu'
   alias fog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@fog.eol.ucar.edu'
   alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind.eol.ucar.edu'
@@ -303,6 +305,7 @@ if ($?prompt) then
   alias rcirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@cirrus.eol.ucar.edu'
   alias rfog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@fog.eol.ucar.edu'
   alias rsmaug 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eol-smaug.eol.ucar.edu'
+  alias rvirga 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eol-virga.eol.ucar.edu'
   alias rwind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@wind.eol.ucar.edu'
   alias awind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 apar@wind.eol.ucar.edu'
   alias rfinecast 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eol-finecast.eol.ucar.edu'
@@ -402,8 +405,7 @@ if ($?prompt) then
 # alias xpol 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 radarop@128.117.47.56'
   alias ice 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@ice.eol.ucar.edu'
 # alias titan 'ssh -a -X -Y -C dixon@titan.rap.ucar.edu'
-  alias exposure 'ssh -a -X -Y -C dixon@daylight.rap.ucar.edu'
-  alias daylight 'ssh -a -X -Y -C dixon@daylight.rap.ucar.edu'
+  alias ral 'ssh -a -X -Y -C dixon@daylight.rap.ucar.edu'
   alias cp2data 'ssh titan5@cp2data'
 
   alias cvsforward22 'ssh -p 22 -a -x -C -R 2401:localhost:2401'
