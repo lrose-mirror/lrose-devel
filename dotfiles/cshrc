@@ -67,7 +67,7 @@ setenv MY_CFLAGS
 setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
 #setenv MY_CPPC_CFLAGS " -std=c++11 "
 
-setenv GCC_WARNINGS "-Wall --pedantic"
+setenv GCC_WARNINGS "-Wall "
 #setenv GCC_WARNINGS "-Wall "
 
 ##################################################
@@ -341,8 +341,9 @@ if ($?prompt) then
   alias sshlab 'ssh -p 22 -a -XY -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80 spol@spol-RV325.eol.ucar.edu'
   alias spollab 'ssh -p 22 -a -XY spol@spol-router.eol.ucar.edu'
   alias sshapar 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
-  alias aparsim 'ssh -p 23 -a -XY apar@spol-router.eol.ucar.edu'
-  alias apartrenton 'ssh -p 24 -a -XY apar@spol-router.eol.ucar.edu'
+  alias aparsim 'ssh -p 23 -a -XY apar@apar-router.eol.ucar.edu'
+  alias apartrenton 'ssh -p 24 -a -XY apar@apar-router.eol.ucar.edu'
+  alias apararchiver 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
