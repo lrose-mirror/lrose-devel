@@ -43,7 +43,8 @@ endif
 ###############################################
 # Set the build environment - LINUX
 
-setenv LANG C
+#setenv LANG C
+setenv LANG en_US.utf8
 
 set path = ($path /usr/bin)
 setenv HOST_OS LINUX_LROSE
@@ -144,7 +145,7 @@ endif
 
 # --- PYTHON ---
 
-setenv PYTHONPATH ~/anaconda3/pkgs
+setenv PYTHONPATH ~/mambaforge/pkgs
 
 # -------- HSRL --------
 
@@ -175,12 +176,12 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
+set path = ($path ~/mambaforge/bin)
 set path = ($path /usr/bin)
 set path = ($path /usr/lib64/qt5/bin)
 
 set path = ($path $ANT_HOME/bin $JAVA_HOME/bin)
 
-set path = ($path ~/anaconda3/bin)
 set path = ($path ~/java/jdk-18.0.2.1/bin/java/bin)
 
 set path = ($path ~/bin)
