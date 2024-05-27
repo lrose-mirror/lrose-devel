@@ -49,7 +49,7 @@ set path = ($path /usr/bin)
 setenv HOST_OS LINUX_LROSE
 # check if we are using qt5 instead of 6
 # if so set the host OS accordingly
-qmake --version | grep "Using Qt version 5" > & /dev/null
+qmake --version |& grep "Using Qt version 5" > & /dev/null
 if ($status == 0) then
   setenv HOST_OS LINUX_QT5
 endif
@@ -68,7 +68,6 @@ setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
 #setenv MY_CPPC_CFLAGS " -std=c++11 "
 
 setenv GCC_WARNINGS "-Wall "
-#setenv GCC_WARNINGS "-Wall "
 
 ##################################################
 # building readyflow for spoldrx
@@ -122,6 +121,7 @@ setenv LDATA_FMQ_ACTIVE true
 
 setenv DS_COMM_TIMEOUT_MSECS 60000
 setenv DS_PING_TIMEOUT_MSECS 20000
+
 
 # udunits XML
 
@@ -204,6 +204,7 @@ endif
 # unlimit coredumpsize
 
 # --- Aliases ---
+
 if ($?prompt) then
 
   alias sc source ~/.cshrc
@@ -213,8 +214,8 @@ if ($?prompt) then
   alias push 'pushd \!*; cd .'
   alias pop 'popd; cd .'
 
-  set prompt = "%m:%~%# "             # tcsh
-  set showdots                        # tcsh
+#  set prompt = "%m:%~%# "             # tcsh
+#  set showdots                        # tcsh
   set watch = (1 root any)            # tcsh
   set history=100
   alias h history
@@ -292,10 +293,6 @@ if ($?prompt) then
   alias grsync "rsync -av --rsh='ssh -p2222' mdtest@localhost:"
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
-  alias aeolus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@aeolus.eol.ucar.edu'
-  alias eldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eldora.eol.ucar.edu'
-  alias hail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@hail.eol.ucar.edu'
-  alias rain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@rain.eol.ucar.edu'
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
   alias sleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@sleet.eol.ucar.edu'
   alias smaug 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-smaug.eol.ucar.edu'
@@ -305,9 +302,6 @@ if ($?prompt) then
   alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind.eol.ucar.edu'
   alias finecast 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-finecast.eol.ucar.edu'
 
-  alias reldora 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@eldora.eol.ucar.edu'
-  alias rhail 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@hail.eol.ucar.edu'
-  alias rrain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@rain.eol.ucar.edu'
   alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
   alias rsleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@sleet.eol.ucar.edu'
   alias rcirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@cirrus.eol.ucar.edu'
@@ -439,9 +433,9 @@ if ($?prompt) then
   alias savedvd 'growisofs -Z /dev/dvd -r -J'
   alias saveiso2dvd 'growisofs -dvd-compat -Z /dev/dvd='
 
-  if (-f ~/.dircolors) then
-    eval `dircolors ~/.dircolors`      # Set up color-ls variables.
-  endif
+#  if (-f ~/.dircolors) then
+#    eval `dircolors ~/.dircolors`      # Set up color-ls variables.
+#  endif
 
 endif
 
