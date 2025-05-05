@@ -3,7 +3,7 @@
 #########################################
 
 if ( $?prompt ) then
-  set prompt = "`hostname`:\!>"
+  set prompt="(`hostname`) `basename $cwd` ! % "
   set autoexpand
   set autolist
   set cdpath = ( ~ )
@@ -43,8 +43,8 @@ endif
 ###############################################
 # Set the build environment - LINUX
 
-#setenv LANG C
-setenv LANG en_US.utf8
+setenv LANG C
+#setenv LANG en_US.utf8
 
 set path = ($path /usr/bin)
 setenv HOST_OS LINUX_LROSE
@@ -145,7 +145,7 @@ endif
 
 # --- PYTHON ---
 
-setenv PYTHONPATH ~/mambaforge/pkgs
+setenv PYTHONPATH ~/miniforge3/pkgs
 
 # -------- HSRL --------
 
@@ -158,10 +158,12 @@ setenv GRIB_CACHE /scr/eldora1/HSRL_data/GFS_cache
 # then projDir/bin, then the rest
 
 set path = (.)
+#set path = ($path $HOME/miniforge3/bin)
 
 if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
+
 
 #if ( -d $HOME/lrose/bin ) then
 #  set path = ($path $HOME/lrose/bin)
@@ -176,7 +178,7 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
-set path = ($path ~/mambaforge/bin)
+#set path = ($path ~/miniforge3/bin)
 set path = ($path /usr/bin)
 set path = ($path /usr/lib64/qt5/bin)
 
@@ -339,6 +341,7 @@ if ($?prompt) then
   alias aparsim 'ssh -p 23 -a -XY apar@apar-router.eol.ucar.edu'
   alias apartrenton 'ssh -p 24 -a -XY apar@apar-router.eol.ucar.edu'
   alias apararchiver 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
+  alias cswrtitan 'ssh -p 22150 -a -XY titan@spol-router.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
