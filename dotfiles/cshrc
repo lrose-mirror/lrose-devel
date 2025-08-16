@@ -295,6 +295,8 @@ if ($?prompt) then
   alias gps 'globalprotect show --status'
   
   alias grsync "rsync -av --rsh='ssh -p2222' mdtest@localhost:"
+  alias rsyncFromSpol "rsync -av --rsh='ssh -p2222' spol@localhost:/data/spol/data.mgen2/time_series/spoldrx/save/20250815 ."
+
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
