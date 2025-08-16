@@ -18,7 +18,8 @@ umask 002
 setenv TAPE /dev/st0
 #setenv PRINTER ET-2720-Series
 #setenv PRINTER eol-color-nw
-setenv PRINTER HP-Color-Laserjet-5M
+#setenv PRINTER HP-Color-Laserjet-5M
+setenv PRINTER eol-rsf-xerox
 
 #unsetenv MANPATH
 
@@ -349,11 +350,13 @@ if ($?prompt) then
   alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.60'
   alias control1 'ssh -p 20022 -a -x -X -C spol@spol.dyndns.org'
   alias control2 'ssh -p 20023 -a -x -X -C spol@spol.dyndns.org'
-  alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
+  alias control3 'ssh -p 20024 -XY -L 2222:mgen2:22 spol@spol.dyndns.org'
+
+alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
   alias hcr-rack 'ssh -p 25 -a -XY hcr@spol-router.eol.ucar.edu'
   alias hcr-archiver 'ssh -a -x -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
   alias cvsarchiver 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
-  alias cvsarchiver2 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.fl-guest.ucar.edu'
+  alias cvsarchiver2 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.dyndns.org'
   alias cvshyper 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@hyper.raf-guest.ucar.edu'
   alias cvsgv 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@rafgv.dyndns.org'
 
