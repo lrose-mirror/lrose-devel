@@ -50,11 +50,12 @@ setenv HOST_OS OSX_LROSE
 setenv LROSE_INSTALL_DIR $HOME/lrose
 setenv LROSE_CORE_DIR $HOME/git/lrose-core
 
-setenv MY_NETCDF4_INCS
-setenv MY_NETCDF4_LIBS
-setenv MY_CFLAGS
+setenv MY_NETCDF4_INCS -I/opt/homebrew/include
+setenv MY_NETCDF4_LIBS -L/opt/homebrew/lib
+setenv MY_CFLAGS " -I/opt/homebrew/include "
 #setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
-setenv MY_CPPC_CFLAGS " -std=c++17 "
+setenv MY_CPPC_CFLAGS " -std=c++17 -I/opt/homebrew/include "
+setenv MY_CPPC_LDFLAGS " -L/opt/homebrew/lib "
 
 #setenv GCC_WARNINGS "-Wall --pedantic"
 #setenv GCC_WARNINGS "-Wall "
@@ -63,11 +64,13 @@ setenv GCC_WARNINGS "  "
 # --- OTHER BUILD SETTINGS
 
 #setenv QTDIR /usr/local/qt5
-setenv QTDIR /usr/local/opt/qt6
+#setenv QTDIR /usr/local/opt/qt6
+setenv QTDIR /opt/homebrew/Cellar/qt/6.11.0
 setenv FC gfortran
 
 #setenv PKG_CONFIG_PATH /usr/local/Cellar/qt@5/5.15.2/lib/pkgconfig
-setenv PKG_CONFIG_PATH /usr/local/Cellar/qt/6.7.0_1/libexec/lib/pkgconfig
+#setenv PKG_CONFIG_PATH /usr/local/Cellar/qt/6.7.0_1/libexec/lib/pkgconfig
+setenv PKG_CONFIG_PATH /opt/homebrew/Cellar/qt/6.11.0/lib/pkgconfig
 # --- LD library path --
 
 setenv LD_LIBRARY_PATH $LROSE_INSTALL_DIR/lib

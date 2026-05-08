@@ -3,7 +3,7 @@
 #########################################
 
 if ( $?prompt ) then
-  set prompt = "`hostname`:\!>"
+  set prompt="(`hostname`) `basename $cwd` ! % "
   set autoexpand
   set autolist
   set cdpath = ( ~ )
@@ -18,7 +18,8 @@ umask 002
 setenv TAPE /dev/st0
 #setenv PRINTER ET-2720-Series
 #setenv PRINTER eol-color-nw
-setenv PRINTER HP-Color-Laserjet-5M
+#setenv PRINTER HP-Color-Laserjet-5M
+setenv PRINTER eol-rsf-xerox
 
 #unsetenv MANPATH
 
@@ -43,8 +44,8 @@ endif
 ###############################################
 # Set the build environment - LINUX
 
-#setenv LANG C
-setenv LANG en_US.utf8
+setenv LANG C
+#setenv LANG en_US.utf8
 
 set path = ($path /usr/bin)
 setenv HOST_OS LINUX_LROSE
@@ -150,8 +151,7 @@ endif
 
 # --- PYTHON ---
 
-setenv PYTHONPATH ~/mambaforge/pkgs
-#setenv PYTHONPATH ~/anaconda3/pkgs
+setenv PYTHONPATH ~/miniforge3/pkgs
 
 # -------- HSRL --------
 
@@ -164,14 +164,22 @@ setenv GRIB_CACHE /scr/eldora1/HSRL_data/GFS_cache
 # then projDir/bin, then the rest
 
 set path = (.)
+#set path = ($path $HOME/miniforge3/bin)
 
 if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
 
+<<<<<<< HEAD
 if ( -d $HOME/lrose/bin ) then
   set path = ($path $HOME/lrose/bin)
 endif
+=======
+
+#if ( -d $HOME/lrose/bin ) then
+#  set path = ($path $HOME/lrose/bin)
+#endif
+>>>>>>> 84d31f8a8180098a1dd9ad5e82014519055797d8
 
 if ( -d $PROJ_DIR ) then
   foreach dir ($PROJ_DIR/*)
@@ -182,8 +190,12 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
+<<<<<<< HEAD
 #set path = ($path ~/mambaforge/bin)
 #set path = ($path ~/anaconda3/bin)
+=======
+#set path = ($path ~/miniforge3/bin)
+>>>>>>> 84d31f8a8180098a1dd9ad5e82014519055797d8
 set path = ($path /usr/bin)
 set path = ($path /usr/lib64/qt5/bin)
 
@@ -299,6 +311,8 @@ if ($?prompt) then
   alias gps 'globalprotect show --status'
   
   alias grsync "rsync -av --rsh='ssh -p2222' mdtest@localhost:"
+  alias rsyncFromSpol "rsync -av --rsh='ssh -p2222' spol@localhost:/data/spol/data.mgen2/time_series/spoldrx/save/20250815 ."
+
   alias front 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front.eol.ucar.edu'
   alias front8 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 -p 22 dixon@front8.eol.ucar.edu'
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
@@ -346,6 +360,7 @@ if ($?prompt) then
   alias aparsim 'ssh -p 23 -a -XY apar@apar-router.eol.ucar.edu'
   alias apartrenton 'ssh -p 24 -a -XY apar@apar-router.eol.ucar.edu'
   alias apararchiver 'ssh -p 22 -a -XY apar@apar-router.eol.ucar.edu'
+  alias cswrtitan 'ssh -p 22150 -a -XY titan@spol-router.eol.ucar.edu'
   alias cvscswr 'ssh -p 22 -a -XY -R 2401:cvs.rap.ucar.edu:2401 titan5@71.33.231.76'
   alias sshcswr 'ssh -p 22 -a -XY titan5@71.33.231.78'
   alias cvshangar 'ssh -a -x -C -R 2401:cvs.rap.ucar.edu:2401 titan5@121.215.243.79'
@@ -353,11 +368,13 @@ if ($?prompt) then
   alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.60'
   alias control1 'ssh -p 20022 -a -x -X -C spol@spol.dyndns.org'
   alias control2 'ssh -p 20023 -a -x -X -C spol@spol.dyndns.org'
-  alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
+  alias control3 'ssh -p 20024 -XY -L 2222:mgen2:22 spol@spol.dyndns.org'
+
+alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
   alias hcr-rack 'ssh -p 25 -a -XY hcr@spol-router.eol.ucar.edu'
   alias hcr-archiver 'ssh -a -x -XY -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
   alias cvsarchiver 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.eol.ucar.edu'
-  alias cvsarchiver2 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.fl-guest.ucar.edu'
+  alias cvsarchiver2 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 hcr@hcr-router.dyndns.org'
   alias cvshyper 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@hyper.raf-guest.ucar.edu'
   alias cvsgv 'ssh -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 -p 22 ads@rafgv.dyndns.org'
 
