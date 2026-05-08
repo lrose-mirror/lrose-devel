@@ -170,16 +170,9 @@ if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
 
-<<<<<<< HEAD
 if ( -d $HOME/lrose/bin ) then
   set path = ($path $HOME/lrose/bin)
 endif
-=======
-
-#if ( -d $HOME/lrose/bin ) then
-#  set path = ($path $HOME/lrose/bin)
-#endif
->>>>>>> 84d31f8a8180098a1dd9ad5e82014519055797d8
 
 if ( -d $PROJ_DIR ) then
   foreach dir ($PROJ_DIR/*)
@@ -190,12 +183,8 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
-<<<<<<< HEAD
 #set path = ($path ~/mambaforge/bin)
 #set path = ($path ~/anaconda3/bin)
-=======
-#set path = ($path ~/miniforge3/bin)
->>>>>>> 84d31f8a8180098a1dd9ad5e82014519055797d8
 set path = ($path /usr/bin)
 set path = ($path /usr/lib64/qt5/bin)
 
