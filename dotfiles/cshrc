@@ -19,7 +19,7 @@ setenv TAPE /dev/st0
 #setenv PRINTER ET-2720-Series
 #setenv PRINTER eol-color-nw
 #setenv PRINTER HP-Color-Laserjet-5M
-setenv PRINTER eol-rsf-xerox
+setenv PRINTER Xerox-RSF
 
 #unsetenv MANPATH
 
@@ -260,7 +260,8 @@ if ($?prompt) then
   alias docker_rm_images 'docker image rm `docker images -q`'
 
   alias xx 'xrdb -override ~/.Xdefaults'
-  alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
+  # alias cvs 'cvs -d :pserver:dixon@localhost:/cvs \!*'
+  alias cvs 'cvs -d :pserver:dixon@cvs.rap.ucar.edu:/cvs \!*'
   alias cvsforward 'ssh -a -x -C -Y -R 2401:localhost:2401'
   alias gitforward 'ssh -a -x -C -Y -R 2222:localhost:22 -R 8888:svn.eol.ucar.edu:80'
   alias cvsin 'ssh -a -x -C -L 2401:cvs.rap.ucar.edu:2401'
@@ -308,6 +309,7 @@ if ($?prompt) then
   alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind.eol.ucar.edu'
   alias finecast 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-finecast.eol.ucar.edu'
 
+  alias rain 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-rain.eol.ucar.edu'
   alias rsnow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@snow.eol.ucar.edu'
   alias rsleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@sleet.eol.ucar.edu'
   alias rcirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 rsfdata@cirrus.eol.ucar.edu'
@@ -352,7 +354,7 @@ if ($?prompt) then
   alias cvsuae 'ssh -a -XY -C -R 2401:cvs.rap.ucar.edu:2401 titan5@94.56.143.60'
   alias control1 'ssh -p 20022 -a -x -X -C spol@spol.dyndns.org'
   alias control2 'ssh -p 20023 -a -x -X -C spol@spol.dyndns.org'
-  alias control3 'ssh -p 20024 -XY -L 2222:mgen2:22 spol@spol.dyndns.org'
+  alias control3 'ssh -p 20024 -XY -L 2222:mgen1:22 -L 3333:pgen1:22 spol@spol.dyndns.org'
 
 alias cvsgate 'ssh -p 23 -a -x -X -C -R 2401:cvs.rap.ucar.edu:2401 -R 8888:svn.eol.ucar.edu:80 spol@spol-gate.ucar.edu'
   alias hcr-rack 'ssh -p 25 -a -XY hcr@spol-router.eol.ucar.edu'
