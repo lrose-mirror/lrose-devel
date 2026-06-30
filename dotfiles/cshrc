@@ -63,11 +63,16 @@ setenv LROSE_CORE_DIR $HOME/git/lrose-core
 #setenv LROSE_INSTALL_DIR $HOME/cidd
 #setenv LROSE_CORE_DIR $HOME/git/lrose-core
 
+# testing MAMBA_FORGE
+
+#setenv HOST_OS MAMBA_FORGE
+#setenv LROSE_INSTALL_DIR /tmp/lrose_mamba_test
+
 setenv MY_NETCDF4_INCS
 setenv MY_NETCDF4_LIBS
 setenv MY_CFLAGS
-setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
-#setenv MY_CPPC_CFLAGS " -std=c++11 "
+#setenv MY_CPPC_CFLAGS " -std=c++11 -pedantic-errors "
+setenv MY_CPPC_CFLAGS " -std=c++17 "
 
 setenv GCC_WARNINGS "-Wall "
 
@@ -165,10 +170,9 @@ if ( -d $LROSE_INSTALL_DIR/bin ) then
   set path = ($path $LROSE_INSTALL_DIR/bin)
 endif
 
-
-#if ( -d $HOME/lrose/bin ) then
-#  set path = ($path $HOME/lrose/bin)
-#endif
+if ( -d $HOME/lrose/bin ) then
+  set path = ($path $HOME/lrose/bin)
+endif
 
 if ( -d $PROJ_DIR ) then
   foreach dir ($PROJ_DIR/*)
@@ -179,7 +183,8 @@ if ( -d $PROJ_DIR ) then
 endif
 
 set path = ($path ~/spol_control/bin)
-#set path = ($path ~/miniforge3/bin)
+#set path = ($path ~/mambaforge/bin)
+#set path = ($path ~/anaconda3/bin)
 set path = ($path /usr/bin)
 set path = ($path /usr/lib64/qt5/bin)
 
