@@ -307,7 +307,7 @@ if ($?prompt) then
   alias snow 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@snow.eol.ucar.edu'
   alias sleet 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@sleet.eol.ucar.edu'
   alias smaug 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-smaug.eol.ucar.edu'
-  alias virga 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@eol-virga.eol.ucar.edu'
+  alias virga 'ssh -a -X -Y -C dixon@eol-virga.eol.ucar.edu'
   alias cirrus 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@cirrus.eol.ucar.edu'
   alias fog 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@fog.eol.ucar.edu'
   alias wind 'ssh -a -X -Y -C -R 2401:cvs.rap.ucar.edu:2401 dixon@wind.eol.ucar.edu'
